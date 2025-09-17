@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aurora Spa — Maderotherapy</title>
+
+<!-- ЕДИНЫЙ ШРИФТ -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+
+<!-- Прелоад фонов 2 и 3 слайдов -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1920&q=80">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80">
+
+<style>
+  :root{
+    --bg:#0c1017;
+    --ink:#eef2f7;
+    --muted: rgba(238,242,247,.8);
+    --line: rgba(255,255,255,.14);
+    --accent:#a76ad6;  /* лаванда */
+    --accent2:#7bd3b5; /* мята */
+    --footerH: 56px;   /* высота футера: точки ставим над ним */
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:#000; color:var(--ink);
+    font-family:'Cormorant Garamond', serif;
+    overflow:hidden; /* управление прокруткой берём на себя */
+  }
+
+  /* ====== СЛАЙДЕР ====== */
+  .hero-slider{width:100%; height:100vh; overflow:hidden;}
+  .carousel-cell{
+    width:100%; height:100vh; position:relative;
+    background-size:cover; background-position:center;
+  }
+  .slide-overlay{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to bottom, rgba(10,14,22,.35) 0%, rgba(10,14,22,.65) 60%, rgba(10,14,22,.85) 100%),
+      radial-gradient(80% 60% at 50% 0%, rgba(167,106,214,.18), transparent 60%),
+      radial-gradient(70% 50% at 50% 100%, rgba(123,211,181,.16), transparent 60%);
+  }
+  .slide-inner{
+    position:relative; z-index:1; height:100%;
+    display:grid; place-items:center;
+    padding:0 6vw; text-align:center;
+    opacity:.96; transform:translateY(0);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .is-selected .slide-inner{opacity:1}
+
+  .title{
+    font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+    font-size:clamp(2rem, 6vw, 3.2rem); margin:0 0 .6em;
+    text-shadow:0 4px 22px rgba(0,0,0,.35);
+    line-height:1.15;
+  }
+  .subtitle{
+    font-style:italic;
+    font-size:clamp(1.2rem,3.5vw,1.7rem);
+    color:var(--muted); margin:.2em 0 1rem;
+  }
+  .lead{
+    max-width:74ch; margin:0 auto; color:var(--muted); line-height:1.65;
+    font-size:clamp(1.05rem,2.4vw,1.25rem);
+  }
+  .bullets{max-width:78ch; margin:1.1em auto 0; text-align:left; line-height:1.7; font-size:1.1rem;}
+  .bullets li{margin:.35em 0;}
+  .chip{
+    display:inline-block; margin-top:1.1em;
+    padding:10px 14px; border-radius:999px; font-weight:700; letter-spacing:.04em;
+    background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#0b0f15;
+    font-size:1.05rem;
+  }
+
+  /* Цены (4 карточки) */
+  .grid{display:grid; gap:14px; width:min(1100px, 92vw); margin:0 auto;}
+  @media (min-width:680px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1060px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  .card{
+    background:rgba(20,25,36,.6); border:1px solid var(--line); border-radius:14px; padding:14px 16px 16px;
+    backdrop-filter: blur(4px) saturate(120%);
+    text-align:left;
+  }
+  .card h3{margin:0 0 .25em; font-size:1.15rem;}
+  .card .muted{color:var(--muted); margin:0 0 .5em; font-size:1.05rem;}
+  .price{font-weight:700; letter-spacing:.02em; font-size:1.1rem;}
+
+  /* ====== ТОПБАР (телеграм, вайбер, телефон) ====== */
+  .topbar{
+    position:fixed; right:10px; top:10px; z-index:9999;
+    display:flex; align-items:center; gap:8px; padding:6px 8px;
+    background:rgba(17,23,34,.55); border:1px solid var(--line); border-radius:999px;
+    backdrop-filter: blur(6px) saturate(120%);
+  }
+  .topbar a, .topbar .tel{
+    display:flex; align-items:center; gap:6px; text-decoration:none; color:var(--ink);
+    padding:6px 8px; border-radius:999px; font-weight:600; line-height:1;
+    font-size:1.02rem;
+  }
+  .iconbtn{width:38px; height:38px; display:grid; place-items:center; padding:0; border:1px solid var(--line);}
+  .iconbtn svg{width:22px; height:22px;}
+  .tel{border-left:1px solid var(--line); padding-left:10px; margin-left:2px; white-space:nowrap;}
+  .tel:hover{opacity:.9}
+
+  /* ====== ФУТЕР (поверх всего) ====== */
+  footer{
+    position:fixed; left:0; right:0; bottom:0; z-index:9998;
+    color:var(--muted); background:rgba(10,14,22,.35); border-top:1px solid var(--line);
+    height:var(--footerH);
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;
+    backdrop-filter: blur(4px) saturate(120%);
+    padding:0 10px; text-align:center;
+    font-size:1rem;
+  }
+  footer .sep{opacity:.5; padding:0 8px;}
+
+  /* ====== FLICKITY: стрелки и ТОЧКИ ====== */
+  .flickity-prev-next-button{width:64px;height:64px;background:transparent}
+  .flickity-prev-next-button:hover{background:transparent}
+  .flickity-prev-next-button .arrow{fill:#fff}
+  /* Переносим точки сразу над футером */
+  .flickity-page-dots{
+    bottom: calc(var(--footerH) + 10px);
+  }
+  .flickity-page-dots .dot{
+    width:28px;height:4px;border-radius:2px;opacity:1;background:rgba(255,255,255,.5)
+  }
+  .flickity-page-dots .dot.is-selected{
+    background:linear-gradient(90deg, var(--accent), var(--accent2))
+  }
+
+  /* ====== МОБИЛЬНАЯ АДАПТАЦИЯ ====== */
+  @media (max-width:520px){
+    :root{ --footerH: 64px; } /* футер выше на телефонах */
+    .topbar{ right:8px; top:8px; padding:4px 6px; gap:6px; }
+    .iconbtn{ width:34px; height:34px; }
+    .iconbtn svg{ width:20px; height:20px; }
+    .tel{ font-size:.98rem; padding-left:8px; }
+    .lead{ font-size:1.05rem; padding:0 .2rem; }
+    .bullets{ font-size:1rem; max-width:88vw; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .slide-inner, .topbar{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ТОПБАР (на всех слайдах) -->
+<div class="topbar" aria-label="Контакты и мессенджеры">
+  <a class="iconbtn" href="https://t.me/username" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
+    <svg viewBox="0 0 240 240" aria-hidden="true"><circle cx="120" cy="120" r="120" fill="#27A7E7"/><path fill="#fff" d="M177.4 73.5c2.3-1 4.7 1.2 3.9 3.6l-23.9 75.4c-.9 2.8-4.1 3.9-6.6 2.3l-33.8-21.9-16.3 15.7c-1.8 1.7-4.8.8-5.3-1.6l-6.2-29.1-24.6-8.4c-2.6-.9-2.6-4.6 0-5.6l112.8-30.4z"/></svg>
+  </a>
+  <a class="iconbtn" href="viber://chat?number=%2B375000000000" title="Viber" aria-label="Viber">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#7C4FC5"/><path fill="#fff" d="M46.6 36.7c-.7 1.9-3.9 3.7-5.3 3.8-1.4.1-1.1.9-7-1.4-5.9-2.3-9.7-8.3-10-8.7-.3-.4-2.4-3.2-2-6 .4-2.8 2.6-3.5 3.4-3.5.8 0 1.7 0 1.9.1.2.1.5 0 .8.6l1.2 2.8c.1.2.1.4 0 .7s-.2.5-.4.7l-.7.7c-.2.2-.4.4-.2.8.2.4 1.1 2 2.5 3.3 1.7 1.6 3.1 2.1 3.6 2.3.4.2.7.2 1-.1.3-.3 1.2-1.4 1.5-1.9.3-.4.6-.5 1-.3.4.1 2.5 1.2 2.9 1.4.4.2.7.3.8.6.1.3.1 1.8-.5 3.2z"/></svg>
+  </a>
+  <a class="tel" href="tel:+375000000000">+375 (00) 000-00-00</a>
+</div>
+
+<!-- СЛАЙДЕР -->
+<div class="hero-slider" data-carousel>
+  <!-- 1. Название и девиз -->
+  <div class="carousel-cell" style="background-image:url(https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1920&q=80);">
+    <div class="slide-overlay"></div>
+    <div class="slide-inner">
+      <div>
+        <h1 class="title">Aurora Spa</h1>
+        <p class="subtitle">Где технологии заботы встречаются с тишиной</p>
+        <p class="lead">Уютный массажный салон: индивидуальные протоколы, качественные масла и тёплая атмосфера.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Методика — Мадеротерапия (ФОН ОБНОВЛЁН) -->
+  <div class="carousel-cell" style="background-image:url('https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1920&q=80');">
+    <div class="slide-overlay"></div>
+    <div class="slide-inner">
+      <div>
+        <h2 class="title">Мадеротерапия</h2>
+        <p class="lead">Массаж деревянными инструментами для мягкого моделирования контуров, улучшения микроциркуляции и тонуса.</p>
+        <ul class="bullets">
+          <li><strong>Дренаж:</strong> снижение отёков и «застоев».</li>
+          <li><strong>Тонус и рельеф:</strong> работа по проблемным зонам без травмы.</li>
+          <li><strong>Расслабление мышц:</strong> глубокое, но комфортное воздействие.</li>
+          <li><strong>Натуральность:</strong> экологичные инструменты и масла.</li>
+        </ul>
+        <div class="chip">Рекомендуемый курс: 8–10 сеансов</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Цены и виды — (ФОН ОБНОВЛЁН) -->
+  <div class="carousel-cell" style="background-image:url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80');">
+    <div class="slide-overlay"></div>
+    <div class="slide-inner">
+      <div>
+        <h2 class="title">Цены и виды</h2>
+        <div class="grid" aria-label="Прайс и услуги">
+          <div class="card">
+            <h3>Мадеротерапия · зона тела</h3>
+            <p class="muted">Интенсивная работа роллерами и кубиками.</p>
+            <div class="price">60 мин · от 70 BYN</div>
+          </div>
+          <div class="card">
+            <h3>Классический массаж</h3>
+            <p class="muted">Общее расслабление и восстановление.</p>
+            <div class="price">60 мин · от 60 BYN</div>
+          </div>
+          <div class="card">
+            <h3>Стоун-терапия</h3>
+            <p class="muted">Горячие камни и глубокое прогревание.</p>
+            <div class="price">75 мин · от 80 BYN</div>
+          </div>
+          <div class="card">
+            <h3>Спина и шея</h3>
+            <p class="muted">Точечная проработка офисных зажимов.</p>
+            <div class="price">30 мин · от 35 BYN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Контакты -->
+  <div class="carousel-cell" style="background-image:url(https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80);">
+    <div class="slide-overlay"></div>
+    <div class="slide-inner">
+      <div>
+        <h2 class="title">Контакты</h2>
+        <p class="lead">
+          ул. Примерная, 12 · Минск · Ежедневно 10:00—21:00<br>
+          Запись: <a href="tel:+375000000000" style="color:#fff;text-decoration:underline;">+375 (00) 000-00-00</a><br>
+          Telegram: <a href="https://t.me/username" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;">@username</a><br>
+          Viber: <a href="viber://chat?number=%2B375000000000" style="color:#fff;text-decoration:underline;">+375 00 000-00-00</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ФУТЕР (поверх всего) -->
+<footer>
+  <span>Адрес: ул. Примерная, 12 · Минск</span>
+  <span class="sep">•</span>
+  <span>Создано студией <strong>Mortred forge</strong></span>
+</footer>
+
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+<script>
+  var carousel = document.querySelector('[data-carousel]');
+  var flkty = new Flickity(carousel, {
+    setGallerySize: false,
+    wrapAround: true,
+    pageDots: true,
+    prevNextButtons: true,
+    draggable: '>1',
+    selectedAttraction: 0.015,
+    friction: 0.38
+  });
+
+  // Параллакс смещения фона
+  var slides = document.getElementsByClassName('carousel-cell');
+  flkty.on('scroll', function () {
+    flkty.slides.forEach(function (slide, i) {
+      var el = slides[i];
+      var x = (slide.target + flkty.x) * -1/4;
+      el.style.backgroundPosition = x + 'px center';
+    });
+  });
+
+  // Прокрутка колёсиком мыши для смены слайдов
+  (function enableWheelScrollSnap(){
+    var last = 0, cooldown = 700;
+    function onWheel(e){
+      var now = Date.now();
+      if (now - last < cooldown) return;
+      var delta = e.deltaY || e.wheelDelta || -e.detail;
+      if (Math.abs(delta) < 10) return;
+      e.preventDefault();
+      (delta > 0) ? flkty.next() : flkty.previous();
+      last = now;
+    }
+    window.addEventListener('wheel', onWheel, { passive: false });
+  })();
+
+  // Уважение к reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    flkty.options.selectedAttraction = 0.04;
+    flkty.options.friction = 0.8;
+  }
+</script>
+</body>
+</html>
