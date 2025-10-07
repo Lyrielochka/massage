@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
 
 <style>
-  /* Р›РѕРєР°Р»СЊРЅС‹Р№ С€СЂРёС„С‚ РёР· РєРѕСЂРЅСЏ */
+  /* Локальный шрифт из корня */
   @font-face{
     font-family:'Gnyrwn977';
     src:url('./gnyrwn977.otf') format('opentype');
@@ -19,14 +19,15 @@
   }
 
   :root{
-    /* Р”СЂРµРІРµСЃРЅР°СЏ С‚РµРјР° Рё СЂР°Р·РјРµСЂС‹ */
+    /* Древесная тема и размеры */
     --bg:#1a1410; --ink:#fff9f2; --muted:rgba(255,249,242,.88);
     --line:rgba(255,255,255,.14); --glass:rgba(34,26,20,.55);
     --wood1:#caa174; --wood2:#a3774b; --wood3:#7a5331;
     --radius:18px;
-    --headerTop:34px;     /* РѕС‚СЃС‚СѓРї СЃРІРµСЂС…Сѓ РґРѕ С…РµРґРµСЂР° */
-    --headerH:75px;       /* СЂРµР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° С€Р°РїРєРё (РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРј) */
-    --footerH:84px;       /* РІС‹СЃРѕС‚Р° С„СѓС‚РµСЂР° */
+
+    --headerTop:34px;     /* отступ сверху до хедера */
+    --headerH:75px;       /* реальная высота шапки */
+    --footerH:84px;       /* высота футера */
 
     --btnH:42px;
   }
@@ -38,29 +39,37 @@
     font-family:'Gnyrwn977', sans-serif;
     font-size:180%;
     font-weight:700;
-    overflow:hidden;
+    overflow:hidden; /* на мобильных переопределим */
     -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   }
-  body *{
-    font-weight:700 !important;
-  }
-  /* ==== РҐРµРґРµСЂ (Р¶С‘СЃС‚РєР°СЏ РІС‹СЃРѕС‚Р°) ==== */
+  body *{ font-weight:700 !important; }
+
+  /* ==== Хедер (жёсткая высота) ==== */
   .header{
     position:fixed; left:0; right:0; top:var(--headerTop); z-index:1000;
     display:flex; justify-content:center; height:var(--headerH);
+    pointer-events:none; /* контейнер сквозной */
   }
   .header-inner{
+    pointer-events:auto;
     height:100%;
     display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:9999px;
     background:var(--glass); border:1px solid var(--line);
     backdrop-filter: blur(10px) saturate(130%);
+    /* мобильная прокрутка, чтобы кнопки не налезали */
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
   }
+  .header-inner::-webkit-scrollbar{display:none}
+
   .nav-btn{
     display:flex; align-items:center; justify-content:center;
     height:var(--btnH); padding:0 14px; border-radius:12px; border:1px solid var(--line);
     color:var(--ink); background:transparent; font-weight:600; letter-spacing:.01em; font-size:.48em;
     font-family:'Gnyrwn977', sans-serif;
     cursor:pointer; white-space:nowrap; transition:background .25s,color .25s,border-color .25s;
+    flex:0 0 auto;
   }
   .nav-btn:hover{ background:rgba(255,255,255,.06) }
   .nav-btn.is-active{
@@ -70,7 +79,7 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
   }
 
-  /* РљРѕРЅС‚Р°РєС‚С‹ СЃРїСЂР°РІР° */
+  /* Контакты справа */
   .contact{
     position:fixed; top:var(--headerTop); right:16px; z-index:1100;
     height:var(--headerH); display:flex; align-items:center; gap:10px;
@@ -80,17 +89,18 @@
     height:calc(var(--headerH) - 12px); padding:0 18px; border-radius:14px;
     background:var(--glass); border:1px solid var(--line); color:var(--ink);
     text-decoration:none; font-weight:600; font-size:.6em; backdrop-filter: blur(10px) saturate(130%);
+    white-space:nowrap;
   }
   .iconbtn{ width:calc(var(--headerH) - 12px); padding:0; justify-content:center; }
   .contact svg{ width:20px; height:20px; display:block }
 
-  /* ==== РЎР»Р°Р№РґРµСЂ ==== */
-  .hero{ width:100vw; height:100vh; }
-  .carousel-cell{ width:100vw; height:100vh; position:relative; isolation:isolate; }
-  .flickity-viewport{ height:100vh !important; }
-  .flickity-slider{ left:0 !important; }
+  /* ==== Слайдер ==== */
+  .hero{ width:100vw; height:100svh; } /* устойчиво к мобильному UI */
+  .carousel-cell{ width:100vw; height:100svh; position:relative; isolation:isolate; }
+  .flickity-viewport{ height:100svh !important; touch-action: pan-y; }
+  .flickity-slider{ left:0 !important; will-change:transform; }
 
-  /* Р¤РѕРЅ */
+  /* Фон */
   .bg-abs{ position:absolute; inset:0; z-index:-2; overflow:hidden; }
   .bg-abs img{ width:100%; height:100%; object-fit:cover; object-position:center; filter:contrast(1.02) saturate(1.02); }
   .overlay{ position:absolute; inset:0; z-index:-1;
@@ -98,15 +108,13 @@
                radial-gradient(120% 80% at 50% 0%, rgba(202,161,116,.15), transparent 60%);
   }
 
-  /* РљРѕРЅС‚РµРЅС‚ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїРѕ С†РµРЅС‚СЂСѓ) */
+  /* Контент (по умолчанию по центру) */
   .slide-inner{
     position:relative; z-index:10; height:100%;
     display:grid; place-items:center; padding:0 6vw; text-align:center;
   }
-  .slide-inner.about-layout{
-    place-items:start center;
-    padding-top:0;
-  }
+  .slide-inner.about-layout{ place-items:start center; padding-top:0; }
+
   @keyframes logoFloat{
     0%,100%{ transform:translateY(0); }
     50%{ transform:translateY(-12px); }
@@ -119,14 +127,12 @@
     0%,100%{ filter:drop-shadow(0 12px 26px rgba(0,0,0,.45)) drop-shadow(0 0 22px rgba(202,161,116,.5)); }
     50%{ filter:drop-shadow(0 18px 30px rgba(0,0,0,.35)) drop-shadow(0 0 36px rgba(202,161,116,.75)); }
   }
-
   @keyframes textReveal{ 0%{ opacity:0; transform:translateY(22px); } 100%{ opacity:1; transform:translateY(0); } }
 
   .title{ margin:0 0 .6rem; line-height:1.15; font-size:clamp(2rem,6.2vw,3.4rem); font-weight:700; text-shadow:0 2px 8px rgba(0,0,0,.5); }
-  .subtitle{ margin:.2rem 0 1.2rem; color:var(--muted); font-size:clamp(1.15rem,3.2vw,1.6rem); }
-  .lead{ max-width:70ch; margin:0 auto; color:var(--muted); line-height:1.7; font-size:clamp(1.02rem,2.2vw,1.22rem); }
+  .subtitle{ margin:.2rem 0 1.2rem; color:var(--muted); font-size:clamp(1.05rem,3.2vw,1.5rem); }
+  .lead{ max-width:70ch; margin:0 auto; color:var(--muted); line-height:1.7; font-size:clamp(.98rem,2.2vw,1.18rem); }
 
-  /* РЈРІРµР»РёС‡РµРЅРёРµ С‚РµРєСЃС‚Р° РЅР° РІСЃРµС… СЃР»Р°Р№РґР°С… */
   .scale-up{ transform:none; transform-origin:center; }
   .scale-up.lifted{ transform:none; }
 
@@ -185,7 +191,6 @@
   .contra-list li:nth-child(12){ --reveal-delay:.68s; }
   .contra-list li:nth-child(13){ --reveal-delay:.72s; }
 
-
   .title--logo{
     display:block;
     margin:0 auto 1rem;
@@ -213,20 +218,20 @@
     animation:logoFloat 6s ease-in-out infinite, logoSheen 4.8s ease-in-out infinite;
   }
 
-  /* РљР°СЂС‚РѕС‡РєРё С†РµРЅ */
+  /* Карточки цен */
   .grid{ display:grid; gap:14px; width:min(1100px,92vw); margin:1rem auto 0; }
   @media (min-width:680px){ .grid{ grid-template-columns:repeat(2,1fr); } }
   @media (min-width:1060px){ .grid{ grid-template-columns:repeat(4,1fr); } }
   .card{ text-align:center; padding:16px; border-radius:var(--radius); background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12); }
 
-  /* РџСЂРµРёРјСѓС‰РµСЃС‚РІР° (РјРµС‚РѕРґРёРєР°) */
+  /* Преимущества (методика) */
   .benefits{ width:min(1100px,92vw); margin:1.2rem auto 0; display:grid; gap:12px; }
   @media (min-width:680px){ .benefits{ grid-template-columns:repeat(3,1fr);} }
   .benefit{ padding:16px; border-radius:var(--radius); text-align:center; background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12); }
   .benefit h3{ margin:.08rem 0 .28rem; font-size:.54em; }
   .benefit p{ margin:0; color:var(--muted); font-size:.48em; line-height:1.5; }
 
-  /* Рћ РЅР°СЃ: РѕР±С‘СЂС‚РєР° вЂ” РЅРµ Р·Р°Р»РµР·Р°РµРј РЅР° С„СѓС‚РµСЂ, РєР°СЂС‚Р° РјР°СЃС€С‚Р°Р±РёСЂСѓРµС‚СЃСЏ */
+  /* О нас: обёртка — не залезаем на футер, карта масштабируется */
   .about-wrap{
     align-self:flex-start;
     justify-self:center;
@@ -235,7 +240,7 @@
     padding-bottom: 32px;
   }
   .map-wrap{
-    width:clamp(300px, 60vw, 300px);
+    width:clamp(280px, 86vw, 340px);
     margin:1rem auto 0; border-radius:var(--radius);
     background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12);
     overflow:hidden;
@@ -243,16 +248,16 @@
   .map-title{ padding:10px 14px; font-weight:700; border-bottom:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(202,161,116,.15), transparent); }
   .map-embed{ width:100%; aspect-ratio:1/1; border:0; display:block; }
 
-  /* РџСЂРѕС‚РёРІРѕРїРѕРєР°Р·Р°РЅРёСЏ: РїСЂРёР¶Р°С‚СЊ РїРѕРґ С…РµРґРµСЂ Рё Р±РµР· РїСЂРѕРєСЂСѓС‚РєРё */
+  /* Противопоказания: прижать под хедер и без прокрутки */
   .top-aligned{
-    display:block; /* СѓР±РёСЂР°РµРј center-СЃРµС‚РєСѓ */
+    display:block; /* убираем center-сетку */
     padding-top: calc(var(--headerTop) + var(--headerH) + 6px);
     padding-bottom: calc(var(--footerH) + 20px);
   }
   .contra-list{
     width:min(860px,92vw);
-    margin:.2rem auto 0; padding-left:1.1em;
-    text-align:left; line-height:1.75; font-size:.56em;
+    margin:.2rem auto 0; padding:12px 16px 12px 1.1em;
+    text-align:left; line-height:1.7; font-size:.56em;
     background:rgba(34,26,20,.62); border:1px solid rgba(255,255,255,.16);
     border-radius:calc(var(--radius)*1.1);
   }
@@ -263,7 +268,7 @@
   .flickity-page-dots .dot{ width:28px;height:4px;border-radius:2px;opacity:1;background:rgba(255,255,255,.5) }
   .flickity-page-dots .dot.is-selected{ background:linear-gradient(135deg,var(--wood1),var(--wood2)) }
 
-  /* Р¤СѓС‚РµСЂ */
+  /* Футер */
   footer{
     position:fixed; left:0; right:0; bottom:0; z-index:900;
     color:var(--muted); background:rgba(34,26,20,.45); border-top:1px solid var(--line);
@@ -274,29 +279,56 @@
   }
   footer .sep{opacity:.5; padding:0 8px;}
 
+  /* ====== АДАПТИВ ====== */
+  /* планшеты */
   @media (max-width:1024px){
-    body *{\r\n    font-weight:700 !important;\r\n  }\r\n  @media (max-width:768px){
-    @media (max-width:520px){
-    :root{ --footerH:104px; --headerH:78px; }
-  </style>
+    :root{ --headerTop:18px; --headerH:74px; }
+    body{ font-size:160%; }
+    .contact a{ font-size:.56em; }
+  }
+  /* телефоны */
+  @media (max-width:768px){
+    :root{ --headerTop:12px; --headerH:70px; --btnH:40px; --footerH:98px; }
+    body{ font-size:145%; overflow:auto; } /* даём странице дышать на мобилках */
+    .header{ justify-content:flex-start; padding:0 12px; }
+    .header-inner{ max-width:100%; }
+    .contact{ right:10px; gap:8px; }
+    .contact a{ padding:0 12px; height:calc(var(--headerH) - 14px); }
+    .subtitle{ font-size:clamp(1rem,3.8vw,1.25rem); }
+    .lead{ font-size:clamp(.95rem,3.2vw,1.08rem); }
+    .benefits{ grid-template-columns:1fr; }
+    .grid{ grid-template-columns:1fr; }
+    .map-wrap{ width:min(92vw,360px); }
+  }
+  /* очень узкие телефоны */
+  @media (max-width:520px){
+    :root{ --headerTop:10px; --headerH:64px; --btnH:38px; --footerH:104px; }
+    body{ font-size:135%; }
+    .contact a:not(.iconbtn){ padding:0 10px; }
+    /* скрываем текст у телефона, оставляем иконку, чтобы не налезало */
+    .contact a:first-child{ padding:0 10px; }
+    .contact a:first-child svg + span{ display:none; }
+    .title{ font-size:clamp(1.6rem,8vw,2.4rem); }
+  }
+</style>
 </head>
 <body>
 
-<!-- РљРѕРЅС‚Р°РєС‚С‹ -->
+<!-- Контакты -->
 <div class="contact" aria-label="Позвонить">
   <a href="tel:+375000000000" title="Позвонить">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 5c0 8 7 15 15 15l2-3-4-3-3 2c-4-2-7-5-9-9l2-3L6 3 4 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    +375 (00) 000-00-00
+    <span>+375 (00) 000-00-00</span>
   </a>
-  <a class="iconbtn" href="https://t.me/username" target="_blank" rel="noopener" title="Telegram" aria-label="РћС‚РєСЂС‹С‚СЊ Telegram">
+  <a class="iconbtn" href="https://t.me/username" target="_blank" rel="noopener" title="Telegram" aria-label="Открыть Telegram">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.036 14.568 9 18l2.325-2.316 5.37 3.86c.62.445 1.488.1 1.654-.643l2.63-11.883c.18-.812-.63-1.486-1.375-1.16L3.6 10.28c-.88.39-.81 1.673.11 1.95l4.49 1.39 9.96-6.27-9.124 7.218Z"/></svg>
   </a>
 </div>
 
-<!-- РҐРµРґРµСЂ -->
-<header class="header" role="navigation" aria-label="РћСЃРЅРѕРІРЅР°СЏ РЅР°РІРёРіР°С†РёСЏ">
+<!-- Хедер -->
+<header class="header" role="navigation" aria-label="Основная навигация">
   <div class="header-inner" id="navBar">
     <button class="nav-btn is-active" data-goto="0">Главная</button>
     <button class="nav-btn" data-goto="1">Методика</button>
@@ -306,32 +338,36 @@
   </div>
 </header>
 
-<!-- РЎР»Р°Р№РґРµСЂ -->
+<!-- Слайдер -->
 <div class="hero" data-carousel>
 
-  <!-- 1 вЂ” Р“Р»Р°РІРЅР°СЏ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5) -->
+  <!-- 1 — Главная -->
   <div class="carousel-cell">
-    <div class="bg-abs"><img src="1.jpg" alt=""></div>
+    <div class="bg-abs"><img src="1.jpg" alt="" loading="eager"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
       <div class="scale-up lifted">
-        <h1 class="title title--logo"><img src="./logo.png" alt="Zarina Maderotherapy" class="brand-logo"></h1>
+        <h1 class="title title--logo"><img src="./logo.png" alt="Zarina Maderotherapy" class="brand-logo" loading="eager" decoding="async"></h1>
         <p class="subtitle">Где технологии заботы встречаются с тишиной</p>
         <p class="lead">Массаж с эффектом преображения. Индивидуальный подход, мягкая проработка — двойной результат</p>
       </div>
     </div>
   </div>
 
-  <!-- 2 вЂ” РњРµС‚РѕРґРёРєР° (С‚РµРїРµСЂСЊ С‚Р°РєРѕР№ Р¶Рµ СЂР°Р·РјРµСЂ) -->
+  <!-- 2 — Методика -->
   <div class="carousel-cell">
-    <div class="bg-abs"><img src="2.jpg" alt=""></div>
+    <div class="bg-abs"><img src="2.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
       <div class="scale-up lifted">
         <h2 class="title">Методика</h2>
         <p class="lead">Мадеротерапия — массаж деревянными инструментами для мягкого моделирования контуров, улучшения микроциркуляции и тонуса</p>
-        <div class="benefits" aria-label="РџСЂРµРёРјСѓС‰РµСЃС‚РІР° РјРµС‚РѕРґРёРєРё">
-          <div class="benefit"><h3>Преимущества методики</h3><p>Натуральный подход</h3><p>Деревянные инструменты, тёплые масла, бережные техники</p></div>
+        <div class="benefits" aria-label="Преимущества методики">
+          <div class="benefit">
+            <h3>Преимущества методики</h3>
+            <p>Натуральный подход</p>
+            <p>Деревянные инструменты, тёплые масла, бережные техники</p>
+          </div>
           <div class="benefit"><h3>Лимфодренаж</h3><p>Снижение отёков и «застоев» — лёгкость в теле</p></div>
           <div class="benefit"><h3>Моделирование контуров</h3><p>Работа по рельефу без травмирующих воздействий</p></div>
           <div class="benefit"><h3>Тонус и упругость</h3><p>Стимуляция микроциркуляции и эластичности тканей</p></div>
@@ -342,9 +378,9 @@
     </div>
   </div>
 
-  <!-- 3 вЂ” Р¦РµРЅС‹ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5) -->
+  <!-- 3 — Цены -->
   <div class="carousel-cell">
-    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80" alt=""></div>
+    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
       <div class="scale-up">
@@ -359,30 +395,31 @@
     </div>
   </div>
 
-  <!-- 4 вЂ” Рћ РЅР°СЃ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5, РєР°СЂС‚Р° РЅРµ Р·Р°Р»РµР·РµС‚ РЅР° С„СѓС‚РµСЂ) -->
+  <!-- 4 — О нас -->
   <div class="carousel-cell">
-    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt=""></div>
+    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner about-layout">
       <div class="about-wrap scale-up lifted">
         <h2 class="title">О нас</h2>
         <p class="lead">ул. Примерная, 12 · Минск · Ежедневно 10:00–21:00<br>
-          Запись: <a href="tel:+375000000000" style="color:#fff;text-decoration:underline">+375 (00) 000-00-00</a> В·
+          Запись: <a href="tel:+375000000000" style="color:#fff;text-decoration:underline">+375 (00) 000-00-00</a> ·
           Telegram: <a href="https://t.me/username" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">@username</a></p>
 
         <div class="map-wrap">
           <div class="map-title">Мы на карте</div>
           <iframe class="map-embed"
             src="https://yandex.ru/map-widget/v1/?um=constructor%3A1&ll=27.5619%2C53.9023&z=13"
-            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="РљР°СЂС‚Р°">
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Карта">
           </iframe>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- 5 — Противопоказания -->
   <div class="carousel-cell">
-    <div class="bg-abs"><img src="2.png" alt=""></div>
+    <div class="bg-abs"><img src="2.png" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner top-aligned">
       <div class="scale-up">
@@ -400,7 +437,7 @@
           <li>Острая ишемия миокарда</li>
           <li>Доброкачественные и злокачественные опухоли до хирургического лечения</li>
           <li>Диабет</li>
-          <li>Алкогольное и наркотическое опьянение и т.д</li>
+          <li>Алкогольное и наркотическое опьянение и т.д.</li>
         </ul>
       </div>
     </div>
@@ -413,7 +450,6 @@
   <span class="sep">•</span>
   <span>Создано студией <strong>Mortred forge</strong></span>
 </footer>
-
 <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
 <script>
   const carouselEl = document.querySelector('[data-carousel]');
