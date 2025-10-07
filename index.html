@@ -1,322 +1,413 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Aurora Spa — Maderotherapy</title>
+<title>Zarina — Maderotherapy</title>
 
-<!-- SEO -->
-<meta name="description" content="Aurora Spa — мягкие протоколы массажа и мадеротерапии. Индивидуальный подход, тёплые масла, уют и тишина. Записывайтесь по телефону или в Telegram." />
-<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="description" content="Zarina — мягкие протоколы массажа и мадеротерапии. Индивидуальный подход, тёплые масла, уют и тишина." />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
 
-<!-- Open Graph -->
-<meta property="og:title" content="Aurora Spa — Maderotherapy" />
-<meta property="og:description" content="Мадеротерапия, классический массаж, стоун-терапия. Нежная эстетика и тишина." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://example.com/" />
-<meta property="og:image" content="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200&q=80" />
-
-<!-- Шрифты -->
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
-<!-- Библиотеки -->
 <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
 
-<!-- Производительность -->
-<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-<link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link rel="preconnect" href="https://t.me" crossorigin>
-<link rel="dns-prefetch" href="//images.unsplash.com">
-<link rel="dns-prefetch" href="//unpkg.com">
-<link rel="dns-prefetch" href="//t.me">
-
 <style>
+  /* Р›РѕРєР°Р»СЊРЅС‹Р№ С€СЂРёС„С‚ РёР· РєРѕСЂРЅСЏ */
+  @font-face{
+    font-family:'Gnyrwn977';
+    src:url('./gnyrwn977.otf') format('opentype');
+    font-display:swap;
+  }
+
   :root{
-    --bg:#0c1017;
-    --ink:#eef2f7;
-    --muted: rgba(238,242,247,.88);
-    --line: rgba(255,255,255,.14);
-    --accent:#a76ad6;  /* лаванда */
-    --accent2:#7bd3b5; /* мята */
-    --footerH: 56px;
-    --stroke: rgba(0,0,0,.45); /* контур текста */
+    /* Р”СЂРµРІРµСЃРЅР°СЏ С‚РµРјР° Рё СЂР°Р·РјРµСЂС‹ */
+    --bg:#1a1410; --ink:#fff9f2; --muted:rgba(255,249,242,.88);
+    --line:rgba(255,255,255,.14); --glass:rgba(34,26,20,.55);
+    --wood1:#caa174; --wood2:#a3774b; --wood3:#7a5331;
+    --radius:18px;
+    --headerTop:34px;     /* РѕС‚СЃС‚СѓРї СЃРІРµСЂС…Сѓ РґРѕ С…РµРґРµСЂР° */
+    --headerH:75px;       /* СЂРµР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° С€Р°РїРєРё (РєРѕРЅС‚СЂРѕР»РёСЂСѓРµРј) */
+    --footerH:84px;       /* РІС‹СЃРѕС‚Р° С„СѓС‚РµСЂР° */
+
+    --btnH:42px;
   }
 
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; background:#000; color:var(--ink);
-    font-family:'Lora', serif;
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Gnyrwn977', sans-serif;
+    font-size:180%;
+    font-weight:700;
     overflow:hidden;
-    text-rendering:optimizeLegibility;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  body *{
+    font-weight:700 !important;
+  }
+  /* ==== РҐРµРґРµСЂ (Р¶С‘СЃС‚РєР°СЏ РІС‹СЃРѕС‚Р°) ==== */
+  .header{
+    position:fixed; left:0; right:0; top:var(--headerTop); z-index:1000;
+    display:flex; justify-content:center; height:var(--headerH);
+  }
+  .header-inner{
+    height:100%;
+    display:flex; align-items:center; gap:8px; padding:6px 8px; border-radius:9999px;
+    background:var(--glass); border:1px solid var(--line);
+    backdrop-filter: blur(10px) saturate(130%);
+  }
+  .nav-btn{
+    display:flex; align-items:center; justify-content:center;
+    height:var(--btnH); padding:0 14px; border-radius:12px; border:1px solid var(--line);
+    color:var(--ink); background:transparent; font-weight:600; letter-spacing:.01em; font-size:.48em;
+    font-family:'Gnyrwn977', sans-serif;
+    cursor:pointer; white-space:nowrap; transition:background .25s,color .25s,border-color .25s;
+  }
+  .nav-btn:hover{ background:rgba(255,255,255,.06) }
+  .nav-btn.is-active{
+    color:#24180f;
+    background:linear-gradient(135deg,var(--wood1),var(--wood2));
+    border-color:rgba(0,0,0,.15);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
   }
 
-  /* ====== СЛАЙДЕР ====== */
-  .hero-slider{width:100%; height:100vh; overflow:hidden;}
-  .carousel-cell{ width:100%; height:100vh; position:relative; isolation:isolate; }
+  /* РљРѕРЅС‚Р°РєС‚С‹ СЃРїСЂР°РІР° */
+  .contact{
+    position:fixed; top:var(--headerTop); right:16px; z-index:1100;
+    height:var(--headerH); display:flex; align-items:center; gap:10px;
+  }
+  .contact a{
+    display:inline-flex; align-items:center; gap:8px;
+    height:calc(var(--headerH) - 12px); padding:0 18px; border-radius:14px;
+    background:var(--glass); border:1px solid var(--line); color:var(--ink);
+    text-decoration:none; font-weight:600; font-size:.6em; backdrop-filter: blur(10px) saturate(130%);
+  }
+  .iconbtn{ width:calc(var(--headerH) - 12px); padding:0; justify-content:center; }
+  .contact svg{ width:20px; height:20px; display:block }
 
-  /* Фон через <picture> */
+  /* ==== РЎР»Р°Р№РґРµСЂ ==== */
+  .hero{ width:100vw; height:100vh; }
+  .carousel-cell{ width:100vw; height:100vh; position:relative; isolation:isolate; }
+  .flickity-viewport{ height:100vh !important; }
+  .flickity-slider{ left:0 !important; }
+
+  /* Р¤РѕРЅ */
   .bg-abs{ position:absolute; inset:0; z-index:-2; overflow:hidden; }
-  .bg-abs picture, .bg-abs img{
-    position:absolute; inset:0; width:100%; height:100%;
-    object-fit:cover; object-position:center;
-  }
-  .bg-abs img{ transform:translateZ(0); will-change:transform; }
-
-  /* Усиленный «мятно-лавандовый» оверлей */
-  .slide-overlay{
-    position:absolute; inset:0; z-index:-1;
-    background:
-      linear-gradient(to bottom, rgba(10,14,22,.38) 0%, rgba(10,14,22,.66) 60%, rgba(10,14,22,.88) 100%),
-      radial-gradient(90% 60% at 50% 0%, rgba(167,106,214,.22), transparent 60%),
-      radial-gradient(80% 55% at 50% 100%, rgba(123,211,181,.20), transparent 60%);
+  .bg-abs img{ width:100%; height:100%; object-fit:cover; object-position:center; filter:contrast(1.02) saturate(1.02); }
+  .overlay{ position:absolute; inset:0; z-index:-1;
+    background:linear-gradient(to bottom, rgba(26,20,16,.35), rgba(26,20,16,.78)),
+               radial-gradient(120% 80% at 50% 0%, rgba(202,161,116,.15), transparent 60%);
   }
 
+  /* РљРѕРЅС‚РµРЅС‚ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РїРѕ С†РµРЅС‚СЂСѓ) */
   .slide-inner{
-    position:relative; z-index:1; height:100%;
-    display:grid; place-items:center;
-    padding:0 6vw; text-align:center;
+    position:relative; z-index:10; height:100%;
+    display:grid; place-items:center; padding:0 6vw; text-align:center;
+  }
+  .slide-inner.about-layout{
+    place-items:start center;
+    padding-top:0;
+  }
+  @keyframes logoFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-12px); }
+  }
+  @keyframes logoHalo{
+    0%,100%{ opacity:.55; transform:scale(1); }
+    50%{ opacity:.9; transform:scale(1.08); }
+  }
+  @keyframes logoSheen{
+    0%,100%{ filter:drop-shadow(0 12px 26px rgba(0,0,0,.45)) drop-shadow(0 0 22px rgba(202,161,116,.5)); }
+    50%{ filter:drop-shadow(0 18px 30px rgba(0,0,0,.35)) drop-shadow(0 0 36px rgba(202,161,116,.75)); }
   }
 
-  /* Мягкая анимация появления */
-  .reveal{ opacity:0; transform:translateY(14px);
-    transition:opacity .6s ease, transform .6s ease; }
-  .is-selected .reveal{ opacity:1; transform:translateY(0); }
-  .reveal.delay-1{ transition-delay:.12s }
-  .reveal.delay-2{ transition-delay:.22s }
-  .reveal.delay-3{ transition-delay:.32s }
+  @keyframes textReveal{ 0%{ opacity:0; transform:translateY(22px); } 100%{ opacity:1; transform:translateY(0); } }
 
-  .title{
-    font-weight:700; letter-spacing:.02em;
-    font-size:clamp(2rem, 6vw, 3.2rem); margin:0 0 .6em;
-    line-height:1.15; text-wrap:balance;
-    text-shadow:
-      0 2px 6px rgba(0,0,0,.38),
-      0 0 1px rgba(0,0,0,.55);
-  }
-  @supports (-webkit-text-stroke: 1px black){
-    .title{-webkit-text-stroke:.6px var(--stroke)}
-  }
+  .title{ margin:0 0 .6rem; line-height:1.15; font-size:clamp(2rem,6.2vw,3.4rem); font-weight:700; text-shadow:0 2px 8px rgba(0,0,0,.5); }
+  .subtitle{ margin:.2rem 0 1.2rem; color:var(--muted); font-size:clamp(1.15rem,3.2vw,1.6rem); }
+  .lead{ max-width:70ch; margin:0 auto; color:var(--muted); line-height:1.7; font-size:clamp(1.02rem,2.2vw,1.22rem); }
 
-  .subtitle{
-    font-style:italic;
-    font-size:clamp(1.22rem,3.5vw,1.75rem);
-    color:#f4f7fb; /* чуть выше контраст */
-    margin:.2em 0 1rem;
-    text-shadow:0 1px 4px rgba(0,0,0,.42);
-  }
-  .lead{
-    max-width:74ch; margin:0 auto; color:var(--muted); line-height:1.68;
-    font-size:clamp(1.06rem,2.4vw,1.26rem);
-    text-shadow:0 1px 3px rgba(0,0,0,.36);
-  }
-  .bullets{max-width:78ch; margin:1.1em auto 0; text-align:left; line-height:1.7; font-size:1.06rem;}
-  .bullets li{margin:.35em 0;}
-  .chip{
-    display:inline-block; margin-top:1.1em;
-    padding:10px 14px; border-radius:999px; font-weight:700; letter-spacing:.02em;
-    background:linear-gradient(90deg, var(--accent), var(--accent2)); color:#0b0f15;
-    font-size:1.02rem;
+  /* РЈРІРµР»РёС‡РµРЅРёРµ С‚РµРєСЃС‚Р° РЅР° РІСЃРµС… СЃР»Р°Р№РґР°С… */
+  .scale-up{ transform:none; transform-origin:center; }
+  .scale-up.lifted{ transform:none; }
+
+  .nav-btn,
+  .contact a,
+  .slide-inner .title,
+  .slide-inner .subtitle,
+  .slide-inner .lead,
+  .grid .card,
+  .benefit,
+  .about-wrap > *,
+  .contra-list li,
+  footer span,
+  footer strong{
+    opacity:0;
+    animation:textReveal .9s ease-out both;
+    animation-delay:var(--reveal-delay,.12s);
   }
 
-  /* Прайс */
-  .grid{display:grid; gap:14px; width:min(1100px, 92vw); margin:0 auto;}
-  @media (min-width:680px){ .grid{grid-template-columns:repeat(2,1fr);} }
-  @media (min-width:1060px){ .grid{grid-template-columns:repeat(4,1fr);} }
-  .card{
-    background:rgba(20,25,36,.6); border:1px solid var(--line); border-radius:14px; padding:14px 16px 16px;
-    backdrop-filter: blur(4px) saturate(120%);
-    text-align:left;
-  }
-  .card h3{margin:0 0 .25em; font-size:1.1rem; font-weight:700;}
-  .card .muted{color:var(--muted); margin:0 0 .5em; font-size:1.02rem;}
-  .price{font-weight:700; letter-spacing:.02em; font-size:1.06rem;}
+  .header-inner .nav-btn:nth-child(1){ --reveal-delay:.12s; }
+  .header-inner .nav-btn:nth-child(2){ --reveal-delay:.18s; }
+  .header-inner .nav-btn:nth-child(3){ --reveal-delay:.24s; }
+  .header-inner .nav-btn:nth-child(4){ --reveal-delay:.30s; }
+  .header-inner .nav-btn:nth-child(5){ --reveal-delay:.36s; }
+  .contact a{ --reveal-delay:.22s; }
+  .contact a.iconbtn{ --reveal-delay:.28s; }
+  .slide-inner .title{ --reveal-delay:.18s; }
+  .slide-inner .subtitle{ --reveal-delay:.26s; }
+  .slide-inner .lead{ --reveal-delay:.34s; }
+  .grid .card{ animation-duration:1s; }
+  .grid .card:nth-child(1){ --reveal-delay:.28s; }
+  .grid .card:nth-child(2){ --reveal-delay:.34s; }
+  .grid .card:nth-child(3){ --reveal-delay:.4s; }
+  .grid .card:nth-child(4){ --reveal-delay:.46s; }
+  .benefit:nth-child(1){ --reveal-delay:.26s; }
+  .benefit:nth-child(2){ --reveal-delay:.3s; }
+  .benefit:nth-child(3){ --reveal-delay:.34s; }
+  .benefit:nth-child(4){ --reveal-delay:.38s; }
+  .benefit:nth-child(5){ --reveal-delay:.42s; }
+  .benefit:nth-child(6){ --reveal-delay:.46s; }
+  .about-wrap > *:nth-child(1){ --reveal-delay:.24s; }
+  .about-wrap > *:nth-child(2){ --reveal-delay:.32s; }
+  .about-wrap > *:nth-child(3){ --reveal-delay:.4s; }
+  .contra-list li{ animation-duration:.75s; }
+  .contra-list li:nth-child(1){ --reveal-delay:.24s; }
+  .contra-list li:nth-child(2){ --reveal-delay:.28s; }
+  .contra-list li:nth-child(3){ --reveal-delay:.32s; }
+  .contra-list li:nth-child(4){ --reveal-delay:.36s; }
+  .contra-list li:nth-child(5){ --reveal-delay:.4s; }
+  .contra-list li:nth-child(6){ --reveal-delay:.44s; }
+  .contra-list li:nth-child(7){ --reveal-delay:.48s; }
+  .contra-list li:nth-child(8){ --reveal-delay:.52s; }
+  .contra-list li:nth-child(9){ --reveal-delay:.56s; }
+  .contra-list li:nth-child(10){ --reveal-delay:.6s; }
+  .contra-list li:nth-child(11){ --reveal-delay:.64s; }
+  .contra-list li:nth-child(12){ --reveal-delay:.68s; }
+  .contra-list li:nth-child(13){ --reveal-delay:.72s; }
 
-  /* Топбар */
-  .topbar{
-    position:fixed; right:10px; top:10px; z-index:9999;
-    display:flex; align-items:center; gap:8px; padding:6px 8px;
-    background:rgba(17,23,34,.55); border:1px solid var(--line); border-radius:999px;
-    backdrop-filter: blur(6px) saturate(120%);
-  }
-  .topbar a, .topbar .tel{
-    display:flex; align-items:center; gap:6px; text-decoration:none; color:var(--ink);
-    padding:6px 8px; border-radius:999px; font-weight:600; line-height:1;
-    font-size:1.02rem;
-  }
-  .iconbtn{width:38px; height:38px; display:grid; place-items:center; padding:0; border:1px solid var(--line);}
-  .iconbtn svg{width:22px; height:22px;}
-  .tel{border-left:1px solid var(--line); padding-left:10px; margin-left:2px; white-space:nowrap;}
-  .tel:hover{opacity:.9}
 
-  /* Футер */
+  .title--logo{
+    display:block;
+    margin:0 auto 1rem;
+    max-width:min(480px,90vw);
+    position:relative;
+    text-align:center;
+  }
+  .title--logo::after{
+    content:'';
+    position:absolute;
+    inset:-18% -16%;
+    border-radius:9999px;
+    background:radial-gradient(circle at center, rgba(202,161,116,.28), rgba(202,161,116,0) 72%);
+    pointer-events:none;
+    opacity:.75;
+    filter:blur(6px);
+    animation:logoHalo 5.2s ease-in-out infinite;
+  }
+  .brand-logo{
+    width:clamp(128px,22.4vw,256px);
+    height:auto;
+    display:block;
+    margin:0 auto;
+    filter:drop-shadow(0 12px 26px rgba(0,0,0,.45)) drop-shadow(0 0 22px rgba(202,161,116,.5));
+    animation:logoFloat 6s ease-in-out infinite, logoSheen 4.8s ease-in-out infinite;
+  }
+
+  /* РљР°СЂС‚РѕС‡РєРё С†РµРЅ */
+  .grid{ display:grid; gap:14px; width:min(1100px,92vw); margin:1rem auto 0; }
+  @media (min-width:680px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (min-width:1060px){ .grid{ grid-template-columns:repeat(4,1fr); } }
+  .card{ text-align:center; padding:16px; border-radius:var(--radius); background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12); }
+
+  /* РџСЂРµРёРјСѓС‰РµСЃС‚РІР° (РјРµС‚РѕРґРёРєР°) */
+  .benefits{ width:min(1100px,92vw); margin:1.2rem auto 0; display:grid; gap:12px; }
+  @media (min-width:680px){ .benefits{ grid-template-columns:repeat(3,1fr);} }
+  .benefit{ padding:16px; border-radius:var(--radius); text-align:center; background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12); }
+  .benefit h3{ margin:.08rem 0 .28rem; font-size:.54em; }
+  .benefit p{ margin:0; color:var(--muted); font-size:.48em; line-height:1.5; }
+
+  /* Рћ РЅР°СЃ: РѕР±С‘СЂС‚РєР° вЂ” РЅРµ Р·Р°Р»РµР·Р°РµРј РЅР° С„СѓС‚РµСЂ, РєР°СЂС‚Р° РјР°СЃС€С‚Р°Р±РёСЂСѓРµС‚СЃСЏ */
+  .about-wrap{
+    align-self:flex-start;
+    justify-self:center;
+    max-width:min(620px,84vw);
+    padding-top: calc(var(--headerTop) + var(--headerH) + 12px);
+    padding-bottom: 32px;
+  }
+  .map-wrap{
+    width:clamp(300px, 60vw, 300px);
+    margin:1rem auto 0; border-radius:var(--radius);
+    background:rgba(49,37,28,.55); border:1px solid rgba(255,255,255,.12);
+    overflow:hidden;
+  }
+  .map-title{ padding:10px 14px; font-weight:700; border-bottom:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(202,161,116,.15), transparent); }
+  .map-embed{ width:100%; aspect-ratio:1/1; border:0; display:block; }
+
+  /* РџСЂРѕС‚РёРІРѕРїРѕРєР°Р·Р°РЅРёСЏ: РїСЂРёР¶Р°С‚СЊ РїРѕРґ С…РµРґРµСЂ Рё Р±РµР· РїСЂРѕРєСЂСѓС‚РєРё */
+  .top-aligned{
+    display:block; /* СѓР±РёСЂР°РµРј center-СЃРµС‚РєСѓ */
+    padding-top: calc(var(--headerTop) + var(--headerH) + 6px);
+    padding-bottom: calc(var(--footerH) + 20px);
+  }
+  .contra-list{
+    width:min(860px,92vw);
+    margin:.2rem auto 0; padding-left:1.1em;
+    text-align:left; line-height:1.75; font-size:.56em;
+    background:rgba(34,26,20,.62); border:1px solid rgba(255,255,255,.16);
+    border-radius:calc(var(--radius)*1.1);
+  }
+  .contra-list li{ margin:.25em 0; }
+
+  /* Flickity dots */
+  .flickity-page-dots{ bottom: calc(var(--footerH) + 10px) }
+  .flickity-page-dots .dot{ width:28px;height:4px;border-radius:2px;opacity:1;background:rgba(255,255,255,.5) }
+  .flickity-page-dots .dot.is-selected{ background:linear-gradient(135deg,var(--wood1),var(--wood2)) }
+
+  /* Р¤СѓС‚РµСЂ */
   footer{
-    position:fixed; left:0; right:0; bottom:0; z-index:9998;
-    color:var(--muted); background:rgba(10,14,22,.35); border-top:1px solid var(--line);
+    position:fixed; left:0; right:0; bottom:0; z-index:900;
+    color:var(--muted); background:rgba(34,26,20,.45); border-top:1px solid var(--line);
     height:var(--footerH);
     display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center;
     backdrop-filter: blur(4px) saturate(120%);
-    padding:0 10px; text-align:center;
-    font-size:1rem;
+    padding:0 18px; text-align:center; font-size:.7em;
   }
   footer .sep{opacity:.5; padding:0 8px;}
 
-  /* Flickity */
-  .flickity-prev-next-button{width:64px;height:64px;background:transparent}
-  .flickity-prev-next-button:hover{background:transparent}
-  .flickity-prev-next-button .arrow{fill:#fff}
-  .flickity-page-dots{ bottom: calc(var(--footerH) + 10px) }
-  .flickity-page-dots .dot{ width:28px;height:4px;border-radius:2px;opacity:1;background:rgba(255,255,255,.5) }
-  .flickity-page-dots .dot.is-selected{ background:linear-gradient(90deg, var(--accent), var(--accent2)) }
-
-  /* Мобильная адаптация */
-  @media (max-width:520px){
-    :root{ --footerH: 64px; }
-    .topbar{ right:8px; top:8px; padding:4px 6px; gap:6px; }
-    .iconbtn{ width:34px; height:34px; }
-    .iconbtn svg{ width:20px; height:20px; }
-    .tel{ font-size:.98rem; padding-left:8px; }
-    .lead{ font-size:1.04rem; padding:0 .2rem; }
-    .bullets{ font-size:1rem; max-width:88vw; }
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .reveal{transition:none}
-  }
-</style>
+  @media (max-width:1024px){
+    body *{\r\n    font-weight:700 !important;\r\n  }\r\n  @media (max-width:768px){
+    @media (max-width:520px){
+    :root{ --footerH:104px; --headerH:78px; }
+  </style>
 </head>
 <body>
 
-<!-- ТОПБАР -->
-<div class="topbar" aria-label="Контакты и мессенджеры">
-  <a class="iconbtn" href="https://t.me/username" target="_blank" rel="noopener" title="Telegram" aria-label="Открыть чат в Telegram">
-    <svg viewBox="0 0 240 240" aria-hidden="true"><circle cx="120" cy="120" r="120" fill="#27A7E7"/><path fill="#fff" d="M177.4 73.5c2.3-1 4.7 1.2 3.9 3.6l-23.9 75.4c-.9 2.8-4.1 3.9-6.6 2.3l-33.8-21.9-16.3 15.7c-1.8 1.7-4.8.8-5.3-1.6l-6.2-29.1-24.6-8.4c-2.6-.9-2.6-4.6 0-5.6l112.8-30.4z"/></svg>
+<!-- РљРѕРЅС‚Р°РєС‚С‹ -->
+<div class="contact" aria-label="Позвонить">
+  <a href="tel:+375000000000" title="Позвонить">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 5c0 8 7 15 15 15l2-3-4-3-3 2c-4-2-7-5-9-9l2-3L6 3 4 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    +375 (00) 000-00-00
   </a>
-  <a class="iconbtn" href="viber://chat?number=%2B375000000000" title="Viber" aria-label="Открыть чат в Viber">
-    <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#7C4FC5"/><path fill="#fff" d="M46.6 36.7c-.7 1.9-3.9 3.7-5.3 3.8-1.4.1-1.1.9-7-1.4-5.9-2.3-9.7-8.3-10-8.7-.3-.4-2.4-3.2-2-6 .4-2.8 2.6-3.5 3.4-3.5.8 0 1.7 0 1.9.1.2.1.5 0 .8.6l1.2 2.8c.1.2.1.4 0 .7s-.2.5-.4.7l-.7.7c-.2.2-.4.4-.2.8.2.4 1.1 2 2.5 3.3 1.7 1.6 3.1 2.1 3.6 2.3.4.2.7.2 1-.1.3-.3 1.2-1.4 1.5-1.9.3-.4.6-.5 1-.3.4.1 2.5 1.2 2.9 1.4.4.2.7.3.8.6.1.3.1 1.8-.5 3.2z"/></svg>
+  <a class="iconbtn" href="https://t.me/username" target="_blank" rel="noopener" title="Telegram" aria-label="РћС‚РєСЂС‹С‚СЊ Telegram">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.036 14.568 9 18l2.325-2.316 5.37 3.86c.62.445 1.488.1 1.654-.643l2.63-11.883c.18-.812-.63-1.486-1.375-1.16L3.6 10.28c-.88.39-.81 1.673.11 1.95l4.49 1.39 9.96-6.27-9.124 7.218Z"/></svg>
   </a>
-  <a class="tel" href="tel:+375000000000" aria-label="Позвонить">+375 (00) 000-00-00</a>
 </div>
 
-<!-- СЛАЙДЕР -->
-<div class="hero-slider" data-carousel>
-  <!-- ===== СЛАЙД 1 ===== -->
-  <div class="carousel-cell">
-    <div class="bg-abs">
-      <picture>
-        <source data-srcset="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?fm=avif&auto=format&fit=crop&w=1920&q=80" type="image/avif">
-        <source data-srcset="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?fm=webp&auto=format&fit=crop&w=1920&q=80" type="image/webp">
-        <img data-src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" />
-      </picture>
-    </div>
-    <div class="slide-overlay"></div>
+<!-- РҐРµРґРµСЂ -->
+<header class="header" role="navigation" aria-label="РћСЃРЅРѕРІРЅР°СЏ РЅР°РІРёРіР°С†РёСЏ">
+  <div class="header-inner" id="navBar">
+    <button class="nav-btn is-active" data-goto="0">Главная</button>
+    <button class="nav-btn" data-goto="1">Методика</button>
+    <button class="nav-btn" data-goto="2">Цены</button>
+    <button class="nav-btn" data-goto="3">О нас</button>
+    <button class="nav-btn" data-goto="4">Противопоказания</button>
+  </div>
+</header>
 
+<!-- РЎР»Р°Р№РґРµСЂ -->
+<div class="hero" data-carousel>
+
+  <!-- 1 вЂ” Р“Р»Р°РІРЅР°СЏ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5) -->
+  <div class="carousel-cell">
+    <div class="bg-abs"><img src="1.jpg" alt=""></div>
+    <div class="overlay"></div>
     <div class="slide-inner">
-      <div class="reveal">
-        <h1 class="title">Aurora Spa</h1>
-        <p class="subtitle reveal delay-1">Где технологии заботы встречаются с тишиной</p>
-        <p class="lead reveal delay-2">Уютный массажный салон: индивидуальные протоколы, качественные масла и тёплая атмосфера.</p>
+      <div class="scale-up lifted">
+        <h1 class="title title--logo"><img src="./logo.png" alt="Zarina Maderotherapy" class="brand-logo"></h1>
+        <p class="subtitle">Где технологии заботы встречаются с тишиной</p>
+        <p class="lead">Массаж с эффектом преображения. Индивидуальный подход, мягкая проработка — двойной результат</p>
       </div>
     </div>
   </div>
 
-  <!-- ===== СЛАЙД 2 ===== -->
+  <!-- 2 вЂ” РњРµС‚РѕРґРёРєР° (С‚РµРїРµСЂСЊ С‚Р°РєРѕР№ Р¶Рµ СЂР°Р·РјРµСЂ) -->
   <div class="carousel-cell">
-    <div class="bg-abs">
-      <picture>
-        <source data-srcset="https://images.unsplash.com/photo-1556228720-195a672e8a03?fm=avif&auto=format&fit=crop&w=1920&q=80" type="image/avif">
-        <source data-srcset="https://images.unsplash.com/photo-1556228720-195a672e8a03?fm=webp&auto=format&fit=crop&w=1920&q=80" type="image/webp">
-        <img data-src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" />
-      </picture>
-    </div>
-    <div class="slide-overlay"></div>
-
+    <div class="bg-abs"><img src="2.jpg" alt=""></div>
+    <div class="overlay"></div>
     <div class="slide-inner">
-      <div class="reveal">
-        <h2 class="title">Мадеротерапия</h2>
-        <p class="lead reveal delay-1">Массаж деревянными инструментами для мягкого моделирования контуров, улучшения микроциркуляции и тонуса.</p>
-        <ul class="bullets reveal delay-2">
-          <li><strong>Дренаж:</strong> снижение отёков и «застоев».</li>
-          <li><strong>Тонус и рельеф:</strong> работа по проблемным зонам без травмы.</li>
-          <li><strong>Расслабление мышц:</strong> глубокое, но комфортное воздействие.</li>
-          <li><strong>Натуральность:</strong> экологичные инструменты и масла.</li>
-        </ul>
-        <div class="chip reveal delay-3">Рекомендуемый курс: 8–10 сеансов</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== СЛАЙД 3 ===== -->
-  <div class="carousel-cell">
-    <div class="bg-abs">
-      <picture>
-        <source data-srcset="https://images.unsplash.com/photo-1542838132-92c53300491e?fm=avif&auto=format&fit=crop&w=1920&q=80" type="image/avif">
-        <source data-srcset="https://images.unsplash.com/photo-1542838132-92c53300491e?fm=webp&auto=format&fit=crop&w=1920&q=80" type="image/webp">
-        <img data-src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" />
-      </picture>
-    </div>
-    <div class="slide-overlay"></div>
-
-    <div class="slide-inner">
-      <div class="reveal">
-        <h2 class="title">Цены и виды</h2>
-        <div class="grid reveal delay-1" aria-label="Прайс и услуги">
-          <div class="card">
-            <h3>Мадеротерапия · зона тела</h3>
-            <p class="muted">Интенсивная работа роллерами и кубиками.</p>
-            <div class="price">60 мин · от 70 BYN</div>
-          </div>
-          <div class="card">
-            <h3>Классический массаж</h3>
-            <p class="muted">Общее расслабление и восстановление.</p>
-            <div class="price">60 мин · от 60 BYN</div>
-          </div>
-          <div class="card">
-            <h3>Стоун-терапия</h3>
-            <p class="muted">Горячие камни и глубокое прогревание.</p>
-            <div class="price">75 мин · от 80 BYN</div>
-          </div>
-          <div class="card">
-            <h3>Спина и шея</h3>
-            <p class="muted">Точечная проработка офисных зажимов.</p>
-            <div class="price">30 мин · от 35 BYN</div>
-          </div>
+      <div class="scale-up lifted">
+        <h2 class="title">Методика</h2>
+        <p class="lead">Мадеротерапия — массаж деревянными инструментами для мягкого моделирования контуров, улучшения микроциркуляции и тонуса</p>
+        <div class="benefits" aria-label="РџСЂРµРёРјСѓС‰РµСЃС‚РІР° РјРµС‚РѕРґРёРєРё">
+          <div class="benefit"><h3>Преимущества методики</h3><p>Натуральный подход</h3><p>Деревянные инструменты, тёплые масла, бережные техники</p></div>
+          <div class="benefit"><h3>Лимфодренаж</h3><p>Снижение отёков и «застоев» — лёгкость в теле</p></div>
+          <div class="benefit"><h3>Моделирование контуров</h3><p>Работа по рельефу без травмирующих воздействий</p></div>
+          <div class="benefit"><h3>Тонус и упругость</h3><p>Стимуляция микроциркуляции и эластичности тканей</p></div>
+          <div class="benefit"><h3>Глубокое расслабление</h3><p>Снятие зажимов, улучшение самочувствия и сна</p></div>
+          <div class="benefit"><h3>Пневмомассаж</h3><p>Баночный массаж — эффективное дополнение курса</p></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== СЛАЙД 4 ===== -->
+  <!-- 3 вЂ” Р¦РµРЅС‹ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5) -->
   <div class="carousel-cell">
-    <div class="bg-abs">
-      <picture>
-        <source data-srcset="https://images.unsplash.com/photo-1540555700478-4be289fbecef?fm=avif&auto=format&fit=crop&w=1920&q=80" type="image/avif">
-        <source data-srcset="https://images.unsplash.com/photo-1540555700478-4be289fbecef?fm=webp&auto=format&fit=crop&w=1920&q=80" type="image/webp">
-        <img data-src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" />
-      </picture>
-    </div>
-    <div class="slide-overlay"></div>
-
+    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80" alt=""></div>
+    <div class="overlay"></div>
     <div class="slide-inner">
-      <div class="reveal">
-        <h2 class="title">Контакты</h2>
-        <p class="lead reveal delay-1">
-          ул. Примерная, 12 · Минск · Ежедневно 10:00—21:00<br>
-          Запись: <a href="tel:+375000000000" style="color:#fff;text-decoration:underline;">+375 (00) 000-00-00</a><br>
-          Telegram: <a href="https://t.me/username" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;">@username</a><br>
-          Viber: <a href="viber://chat?number=%2B375000000000" style="color:#fff;text-decoration:underline;">+375 00 000-00-00</a>
-        </p>
+      <div class="scale-up">
+        <h2 class="title">Цены</h2>
+        <div class="grid">
+          <div class="card"><h3>Голова + лицо</h3><div class="muted">Гармония сияния</div><div class="price">30 мин. · 20 BYN</div></div>
+          <div class="card"><h3>Спина + руки + живот</h3><div class="muted">Глубокое расслабление</div><div class="price">1–1,5 ч. · 50 BYN</div></div>
+          <div class="card"><h3>Ягодицы + ноги + живот</h3><div class="muted">Лёгкость движения</div><div class="price">1–1,5 ч. · 50 BYN</div></div>
+          <div class="card"><h3>Всё тело</h3><div class="muted">Полное обновление</div><div class="price">1,5–2,5 ч · 100 BYN</div></div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- 4 вЂ” Рћ РЅР°СЃ (СѓРІРµР»РёС‡РµРЅРѕ Г—1.5, РєР°СЂС‚Р° РЅРµ Р·Р°Р»РµР·РµС‚ РЅР° С„СѓС‚РµСЂ) -->
+  <div class="carousel-cell">
+    <div class="bg-abs"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt=""></div>
+    <div class="overlay"></div>
+    <div class="slide-inner about-layout">
+      <div class="about-wrap scale-up lifted">
+        <h2 class="title">О нас</h2>
+        <p class="lead">ул. Примерная, 12 · Минск · Ежедневно 10:00–21:00<br>
+          Запись: <a href="tel:+375000000000" style="color:#fff;text-decoration:underline">+375 (00) 000-00-00</a> В·
+          Telegram: <a href="https://t.me/username" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">@username</a></p>
+
+        <div class="map-wrap">
+          <div class="map-title">Мы на карте</div>
+          <iframe class="map-embed"
+            src="https://yandex.ru/map-widget/v1/?um=constructor%3A1&ll=27.5619%2C53.9023&z=13"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="РљР°СЂС‚Р°">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="carousel-cell">
+    <div class="bg-abs"><img src="2.png" alt=""></div>
+    <div class="overlay"></div>
+    <div class="slide-inner top-aligned">
+      <div class="scale-up">
+        <h2 class="title">Противопоказания</h2>
+        <ul class="contra-list">
+          <li>Гипертермия</li>
+          <li>Кровотечения</li>
+          <li>Болезни крови</li>
+          <li>Заболевания кожи</li>
+          <li>Значительный варикоз</li>
+          <li>Тромбоз</li>
+          <li>Туберкулёз</li>
+          <li>Беременность</li>
+          <li>Заболевания лимф. сосудов и узлов</li>
+          <li>Острая ишемия миокарда</li>
+          <li>Доброкачественные и злокачественные опухоли до хирургического лечения</li>
+          <li>Диабет</li>
+          <li>Алкогольное и наркотическое опьянение и т.д</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ФУТЕР -->
 <footer>
   <span>Адрес: ул. Примерная, 12 · Минск</span>
   <span class="sep">•</span>
@@ -325,83 +416,40 @@
 
 <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
 <script>
-  // Инициализация карусели
-  var carousel = document.querySelector('[data-carousel]');
-  var isMobile = window.matchMedia('(max-width:520px)').matches;
-
-  var flkty = new Flickity(carousel, {
-    setGallerySize: false,
-    wrapAround: true,
-    pageDots: true,
-    prevNextButtons: true,
-    draggable: '>1',
-    selectedAttraction: isMobile ? 0.03 : 0.015,
-    friction: isMobile ? 0.6 : 0.38,
-    dragThreshold: isMobile ? 8 : 3
+  const carouselEl = document.querySelector('[data-carousel]');
+  const flkty = new Flickity(carouselEl, {
+    wrapAround:true, setGallerySize:false, prevNextButtons:true, pageDots:true,
+    draggable:'>1', selectedAttraction:0.02, friction:0.35
   });
 
-  // ARIA-ярлыки для стрелок Flickity
-  flkty.on('ready', function(){
-    var prev = carousel.querySelector('.flickity-prev-next-button.previous');
-    var next = carousel.querySelector('.flickity-prev-next-button.next');
-    if(prev){ prev.setAttribute('aria-label','Предыдущий слайд'); prev.setAttribute('title','Предыдущий слайд'); }
-    if(next){ next.setAttribute('aria-label','Следующий слайд'); next.setAttribute('title','Следующий слайд'); }
-  });
+  const btns = Array.from(document.querySelectorAll('.nav-btn'));
+  function setActive(i){ btns.forEach((b,idx)=> b.classList.toggle('is-active', idx===i)); }
+  btns.forEach((b,i)=> b.addEventListener('click', ()=> flkty.select(i)));
+  flkty.on('select', ()=> setActive(flkty.selectedIndex));
+  setActive(0);
 
-  // ===== Ленивая загрузка фоновых <img> в <picture> =====
-  function activateLazy(node){
-    if(node.tagName === 'SOURCE' && node.dataset.srcset){ node.srcset = node.dataset.srcset; node.removeAttribute('data-srcset'); }
-    if(node.tagName === 'IMG' && node.dataset.src){ node.src = node.dataset.src; node.removeAttribute('data-src'); }
-  }
-
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if(entry.isIntersecting){
-          var pic = entry.target;
-          pic.querySelectorAll('source[data-srcset], img[data-src]').forEach(activateLazy);
-          io.unobserve(pic);
-        }
-      });
-    }, { root: null, rootMargin: '200px', threshold: 0.01 });
-
-    document.querySelectorAll('.bg-abs picture').forEach(function(p){ io.observe(p); });
-  }else{
-    document.querySelectorAll('picture source[data-srcset], picture img[data-src]').forEach(activateLazy);
-  }
-
-  // ===== Параллакс фона (только десктоп и без reduced-motion) =====
-  if (!isMobile && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var ticking = false;
-    flkty.on('scroll', function(){
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function(){
-        var img = document.querySelector('.carousel-cell.is-selected .bg-abs img');
-        if(img){
-          var x = (flkty.x * -0.08);
-          img.style.transform = 'translateX(' + x + 'px)';
-        }
-        ticking = false;
-      });
-    });
-  }
-
-  // ===== Прокрутка колёсиком для смены слайдов (desktop) =====
-  (function enableWheelScrollSnap(){
-    if (isMobile) return;
-    var last = 0, cooldown = 700;
-    function onWheel(e){
-      var now = Date.now();
-      if (now - last < cooldown) return;
-      var delta = e.deltaY || e.wheelDelta || -e.detail;
-      if (Math.abs(delta) < 10) return;
-      e.preventDefault();
-      (delta > 0) ? flkty.next() : flkty.previous();
-      last = now;
-    }
-    window.addEventListener('wheel', onWheel, { passive: false });
+  // РќР°РІРёРіР°С†РёСЏ РєРѕР»РµСЃРѕРј (desktop)
+  (function(){
+    if (window.matchMedia('(max-width:520px)').matches) return;
+    let last=0, cooldown=650;
+    window.addEventListener('wheel',(e)=>{
+      const now=Date.now(); if(now-last<cooldown) return;
+      const d=e.deltaY||e.wheelDelta||-e.detail; if(Math.abs(d)<10) return;
+      e.preventDefault(); d>0?flkty.next():flkty.previous(); last=now;
+    },{passive:false});
   })();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
