@@ -313,47 +313,85 @@
       transform:none !important;
     }
 
-    /* 1) Кнопки телефона/ТГ переезжают над футером */
-    .contact{ 
+    /* Контакты переезжают над футером */
+    .contact{
       left:0; right:0; top:auto; bottom:calc(var(--footerH) + 10px);
       height:auto; justify-content:center; gap:12px; pointer-events:none;
     }
-    .contact a{ 
+    .contact a{
       pointer-events:auto; height:44px; padding:0 14px; border-radius:14px; font-size:.72em;
       background:linear-gradient(180deg, rgba(202,161,116,.18), rgba(202,161,116,.04));
     }
     .iconbtn{ width:44px; }
 
-    /* Хедер на мобильных тише и левее */
+    /* Хедер держим ближе к левому краю */
     .header{ justify-content:flex-start; padding:0 12px; }
     .header-inner{ max-width:100%; }
 
-    /* 2) Вертикальный скролл на 2 и 4 слайдах */
-    .carousel-cell:nth-child(2),
-    .carousel-cell:nth-child(4){
-      height:auto; min-height:100svh; /* рост по контенту */
+    /* Горизонтальный скролл секций */
+    .hero{ height:auto; }
+    .hero.is-mobile-scroll{
+      display:flex;
+      gap:clamp(16px,4vw,28px);
+      overflow-x:auto;
+      overflow-y:hidden;
+      scroll-snap-type:x mandatory;
+      padding:calc(var(--headerTop) + var(--headerH) + 18px) 6vw calc(var(--footerH) + 120px);
+      -webkit-overflow-scrolling:touch;
     }
-    .carousel-cell:nth-child(2) .slide-inner,
-    .carousel-cell:nth-child(4) .slide-inner{
-      display:block; text-align:left; padding:calc(var(--headerTop) + var(--headerH) + 10px) 6vw calc(var(--footerH) + 120px);
+    .hero.is-mobile-scroll::-webkit-scrollbar{ display:none; }
+    .hero.is-mobile-scroll .carousel-cell{
+      flex:0 0 calc(88vw);
+      max-width:calc(88vw);
+      min-height:calc(100svh - var(--headerTop) - var(--headerH) - var(--footerH) - 60px);
+      height:auto;
+      scroll-snap-align:center;
+      border-radius:calc(var(--radius)*1.1);
+      overflow:hidden;
+      position:relative;
+      isolation:isolate;
+    }
+    .hero.is-mobile-scroll .bg-abs,
+    .hero.is-mobile-scroll .overlay{
+      border-radius:inherit;
+    }
+    .hero.is-mobile-scroll .slide-inner{
+      padding:28px clamp(20px,5vw,34px) calc(var(--footerH) + 56px);
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:flex-start;
+      gap:clamp(16px,3.2vw,24px);
+      text-align:left;
+    }
+    .hero.is-mobile-scroll .slide-inner .lead{
+      max-width:none;
+      margin:0;
+    }
+    .hero.is-mobile-scroll .top-aligned{
+      padding-top:32px;
+    }
+    .hero.is-mobile-scroll .grid,
+    .hero.is-mobile-scroll .benefits{
+      width:100%;
     }
 
-    /* Разрешаем вертикальный скролл именно внутри этих слайдов */
-    .flickity-viewport{ height:auto !important; }
-    .carousel-cell{ min-height:100svh; height:auto; }
-
-    /* 3) Масштаб текста на остальных слайдах под экран */
+    /* Текстовые размеры проще */
     .title{ font-size:clamp(1.8rem, 8.2vw, 2.4rem); }
     .subtitle{ font-size:clamp(1rem, 3.8vw, 1.25rem); }
     .lead{ font-size:clamp(.95rem, 3.2vw, 1.08rem); }
 
-    /* Сетки в один столбец */
     .benefits{ grid-template-columns:1fr; }
     .grid{ grid-template-columns:1fr; }
     .map-wrap{ width:min(92vw,360px); }
+
+    .flickity-button,
+    .flickity-page-dots{
+      display:none !important;
+    }
   }
 
-  /* Тесные экраны телефонов */
+  /* тесные экраны телефонов */
   @media (max-width:520px){
     :root{ --headerTop:10px; --headerH:60px; --btnH:36px; --footerH:112px; }
     body{ font-size:135%; }
@@ -361,6 +399,16 @@
     .contact a:first-child svg + span{ display:none; }
     .contact a{ padding:0 10px; }
     .slide-inner .lead{ margin-left:0; margin-right:0; }
+    .hero.is-mobile-scroll{
+      gap:clamp(12px,5vw,18px);
+      padding-left:5vw;
+      padding-right:5vw;
+    }
+    .hero.is-mobile-scroll .carousel-cell{
+      flex-basis:calc(92vw);
+      max-width:calc(92vw);
+      min-height:calc(100svh - var(--headerTop) - var(--headerH) - var(--footerH) - 50px);
+    }
   }
 </style>
 </head>
@@ -505,45 +553,163 @@
 <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
 <script>
   const carouselEl = document.querySelector('[data-carousel]');
-  const flkty = new Flickity(carouselEl, {
-    wrapAround:true, setGallerySize:false, prevNextButtons:true, pageDots:true,
-    draggable:'>1', selectedAttraction:0.02, friction:0.35
-  });
+  const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
+  if (carouselEl && navButtons.length){
+    const mobileMQ = window.matchMedia('(max-width:768px)');
+    let flkty = null;
+    let wheelHandlerBound = false;
+    let scrollListenerAttached = false;
+    let lastWheel = 0;
+    let ticking = false;
 
-  const btns = Array.from(document.querySelectorAll('.nav-btn'));
-  function setActive(i){ btns.forEach((b,idx)=> b.classList.toggle('is-active', idx===i)); }
-  btns.forEach((b,i)=> b.addEventListener('click', ()=> flkty.select(i)));
-  flkty.on('select', ()=> setActive(flkty.selectedIndex));
-  setActive(0);
+    const getCells = () => Array.from(carouselEl.querySelectorAll('.carousel-cell')).filter(cell => !cell.classList.contains('is-cloned'));
 
-  const setDraggable = (shouldDrag)=>{
-    if (flkty.options.draggable === shouldDrag) return;
-    flkty.options.draggable = shouldDrag;
-    flkty.updateDraggable();
-  };
+    const setActive = (index) => {
+      navButtons.forEach((btn, idx) => {
+        const isActive = idx === index;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    };
 
-  // Навигация колесом (desktop)
-  (function(){
-    if (window.matchMedia('(max-width:520px)').matches) return;
-    let last=0, cooldown=650;
-    window.addEventListener('wheel',(e)=>{
-      const now=Date.now(); if(now-last<cooldown) return;
-      const d=e.deltaY||e.wheelDelta||-e.detail; if(Math.abs(d)<10) return;
-      e.preventDefault(); d>0?flkty.next():flkty.previous(); last=now;
-    },{passive:false});
-  })();
+    const scrollToCell = (index) => {
+      const cells = getCells();
+      const cell = cells[index];
+      if (!cell) return;
+      cell.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+    };
 
-  // Блокировка горизонтального свайпа, когда в 2 и 4 слайдах юзер скроллит вниз
-  flkty.on('dragStart', ()=>{
-    const i = flkty.selectedIndex;
-    const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
-    setDraggable(!isScrollable);
-  });
-  flkty.on('settle', ()=>{
-    const i = flkty.selectedIndex;
-    const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
-    setDraggable(!isScrollable); // включаем свайп только на не-скролльных слайдах
-  });
+    const updateActiveByScroll = () => {
+      const cells = getCells();
+      if (!cells.length) return;
+      const midpoint = carouselEl.scrollLeft + carouselEl.clientWidth / 2;
+      let closestIndex = 0;
+      let minDelta = Infinity;
+      cells.forEach((cell, idx) => {
+        const center = cell.offsetLeft + cell.offsetWidth / 2;
+        const delta = Math.abs(center - midpoint);
+        if (delta < minDelta){
+          minDelta = delta;
+          closestIndex = idx;
+        }
+      });
+      setActive(closestIndex);
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        updateActiveByScroll();
+      });
+    };
+
+    const wheelHandler = (event) => {
+      if (!flkty) return;
+      if (mobileMQ.matches) return;
+      if (window.matchMedia('(max-width:520px)').matches) return;
+      const now = Date.now();
+      if (now - lastWheel < 650) return;
+      const delta = event.deltaY || event.wheelDelta || -event.detail;
+      if (Math.abs(delta) < 10) return;
+      event.preventDefault();
+      delta > 0 ? flkty.next() : flkty.previous();
+      lastWheel = now;
+    };
+
+    const bindWheel = () => {
+      if (wheelHandlerBound) return;
+      window.addEventListener('wheel', wheelHandler, { passive:false });
+      wheelHandlerBound = true;
+    };
+
+    const unbindWheel = () => {
+      if (!wheelHandlerBound) return;
+      window.removeEventListener('wheel', wheelHandler, { passive:false });
+      wheelHandlerBound = false;
+    };
+
+    const attachMobileScroll = () => {
+      if (scrollListenerAttached) return;
+      carouselEl.addEventListener('scroll', onScroll, { passive:true });
+      scrollListenerAttached = true;
+    };
+
+    const detachMobileScroll = () => {
+      if (!scrollListenerAttached) return;
+      carouselEl.removeEventListener('scroll', onScroll);
+      scrollListenerAttached = false;
+      ticking = false;
+    };
+
+    const enterMobileMode = () => {
+      if (flkty){
+        unbindWheel();
+        flkty.destroy();
+        flkty = null;
+      }
+      carouselEl.classList.add('is-mobile-scroll');
+      detachMobileScroll();
+      navButtons.forEach((btn, idx) => {
+        btn.onclick = () => scrollToCell(idx);
+      });
+      carouselEl.scrollLeft = 0;
+      setActive(0);
+      updateActiveByScroll();
+      attachMobileScroll();
+    };
+
+    const enterDesktopMode = () => {
+      detachMobileScroll();
+      carouselEl.classList.remove('is-mobile-scroll');
+      flkty = new Flickity(carouselEl, {
+        wrapAround:true,
+        setGallerySize:false,
+        prevNextButtons:true,
+        pageDots:true,
+        draggable:'>1',
+        selectedAttraction:0.02,
+        friction:0.35
+      });
+      const applyActive = () => setActive(flkty.selectedIndex);
+      flkty.on('select', applyActive);
+      applyActive();
+      navButtons.forEach((btn, idx) => {
+        btn.onclick = () => flkty.select(idx);
+      });
+
+      const setDraggable = (shouldDrag) => {
+        if (flkty.options.draggable === shouldDrag) return;
+        flkty.options.draggable = shouldDrag;
+        flkty.updateDraggable();
+      };
+
+      flkty.on('dragStart', () => {
+        const index = flkty.selectedIndex;
+        const needsScroll = (index === 1 || index === 3) && window.matchMedia('(max-width:768px)').matches;
+        setDraggable(!needsScroll);
+      });
+      flkty.on('settle', () => {
+        const index = flkty.selectedIndex;
+        const needsScroll = (index === 1 || index === 3) && window.matchMedia('(max-width:768px)').matches;
+        setDraggable(!needsScroll);
+      });
+
+      bindWheel();
+    };
+
+    const setupMode = () => {
+      if (mobileMQ.matches){
+        enterMobileMode();
+      } else {
+        enterDesktopMode();
+      }
+    };
+
+    mobileMQ.addEventListener('change', setupMode);
+    setupMode();
+  }
 </script>
 </body>
 </html>
