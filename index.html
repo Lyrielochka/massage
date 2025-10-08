@@ -144,7 +144,6 @@
   .grid .card,
   .benefit,
   .about-wrap > *,
-  .contra-list li,
   footer span,
   footer strong{
     opacity:0;
@@ -176,21 +175,6 @@
   .about-wrap > *:nth-child(1){ --reveal-delay:.24s; }
   .about-wrap > *:nth-child(2){ --reveal-delay:.32s; }
   .about-wrap > *:nth-child(3){ --reveal-delay:.4s; }
-  .contra-list li{ animation-duration:.75s; }
-  .contra-list li:nth-child(1){ --reveal-delay:.24s; }
-  .contra-list li:nth-child(2){ --reveal-delay:.28s; }
-  .contra-list li:nth-child(3){ --reveal-delay:.32s; }
-  .contra-list li:nth-child(4){ --reveal-delay:.36s; }
-  .contra-list li:nth-child(5){ --reveal-delay:.4s; }
-  .contra-list li:nth-child(6){ --reveal-delay:.44s; }
-  .contra-list li:nth-child(7){ --reveal-delay:.48s; }
-  .contra-list li:nth-child(8){ --reveal-delay:.52s; }
-  .contra-list li:nth-child(9){ --reveal-delay:.56s; }
-  .contra-list li:nth-child(10){ --reveal-delay:.6s; }
-  .contra-list li:nth-child(11){ --reveal-delay:.64s; }
-  .contra-list li:nth-child(12){ --reveal-delay:.68s; }
-  .contra-list li:nth-child(13){ --reveal-delay:.72s; }
-
   .title--logo{
     display:block;
     margin:0 auto 1rem;
@@ -248,20 +232,6 @@
   .map-title{ padding:10px 14px; font-weight:700; border-bottom:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(202,161,116,.15), transparent); }
   .map-embed{ width:100%; aspect-ratio:1/1; border:0; display:block; }
 
-  /* Противопоказания: прижать под хедер и без прокрутки */
-  .top-aligned{
-    display:block; /* убираем center-сетку */
-    padding-top: calc(var(--headerTop) + var(--headerH) + 6px);
-    padding-bottom: calc(var(--footerH) + 20px);
-  }
-  .contra-list{
-    width:min(860px,92vw);
-    margin:.2rem auto 0; padding:12px 16px 12px 1.1em;
-    text-align:left; line-height:1.7; font-size:.56em;
-    background:rgba(34,26,20,.62); border:1px solid rgba(255,255,255,.16);
-    border-radius:calc(var(--radius)*1.1);
-  }
-  .contra-list li{ margin:.25em 0; }
 
   /* Flickity dots */
   .flickity-page-dots{ bottom: calc(var(--footerH) + 10px) }
@@ -294,9 +264,8 @@
       font-size:145%;
       overflow-y:auto;
       overflow-x:hidden;
-    } /* даём странице дышать на мобилках */
+    } /* mobile defaults */
 
-    /* Отключаем reveal-анимации на мобилках, чтобы текст сразу отображался */
     .nav-btn,
     .contact a,
     .slide-inner .title,
@@ -305,7 +274,6 @@
     .grid .card,
     .benefit,
     .about-wrap > *,
-    .contra-list li,
     footer span,
     footer strong{
       animation:none !important;
@@ -313,7 +281,6 @@
       transform:none !important;
     }
 
-    /* Контакты переезжают над футером */
     .contact{
       left:0; right:0; top:auto; bottom:calc(var(--footerH) + 10px);
       height:auto; justify-content:center; gap:12px; pointer-events:none;
@@ -324,11 +291,9 @@
     }
     .iconbtn{ width:44px; }
 
-    /* Хедер держим ближе к левому краю */
     .header{ justify-content:flex-start; padding:0 12px; }
     .header-inner{ max-width:100%; }
 
-    /* Горизонтальный скролл секций */
     .hero{ height:auto; }
     .hero.is-mobile-scroll{
       display:flex;
@@ -336,15 +301,16 @@
       overflow-x:auto;
       overflow-y:hidden;
       scroll-snap-type:x mandatory;
-      padding:calc(var(--headerTop) + var(--headerH) + 18px) 6vw calc(var(--footerH) + 120px);
+      padding:calc(var(--headerTop) + var(--headerH) + 12px) clamp(4vw,5vw,6vw) calc(var(--footerH) + 72px);
+      scroll-padding-inline:clamp(4vw,5vw,6vw);
       -webkit-overflow-scrolling:touch;
     }
     .hero.is-mobile-scroll::-webkit-scrollbar{ display:none; }
     .hero.is-mobile-scroll .carousel-cell{
+      display:flex; flex-direction:column;
       flex:0 0 calc(88vw);
       max-width:calc(88vw);
-      min-height:calc(100svh - var(--headerTop) - var(--headerH) - var(--footerH) - 60px);
-      height:auto;
+      min-height:calc(100svh - var(--headerTop) - var(--headerH) - var(--footerH) - 32px);
       scroll-snap-align:center;
       border-radius:calc(var(--radius)*1.1);
       overflow:hidden;
@@ -352,31 +318,27 @@
       isolation:isolate;
     }
     .hero.is-mobile-scroll .bg-abs,
-    .hero.is-mobile-scroll .overlay{
-      border-radius:inherit;
-    }
+    .hero.is-mobile-scroll .overlay{ border-radius:inherit; }
+
     .hero.is-mobile-scroll .slide-inner{
-      padding:28px clamp(20px,5vw,34px) calc(var(--footerH) + 56px);
+      flex:1;
+      padding:calc(var(--headerTop) + var(--headerH) + 16px) clamp(18px,5vw,32px) calc(var(--footerH) + 56px);
       display:flex;
       flex-direction:column;
-      align-items:flex-start;
       justify-content:flex-start;
-      gap:clamp(16px,3.2vw,24px);
+      align-items:flex-start;
+      gap:clamp(16px,3.5vw,24px);
       text-align:left;
+      overflow:hidden;
     }
     .hero.is-mobile-scroll .slide-inner .lead{
       max-width:none;
       margin:0;
     }
-    .hero.is-mobile-scroll .top-aligned{
-      padding-top:32px;
-    }
-    .hero.is-mobile-scroll .grid,
-    .hero.is-mobile-scroll .benefits{
-      width:100%;
-    }
 
-    /* Текстовые размеры проще */
+    .hero.is-mobile-scroll .grid,
+    .hero.is-mobile-scroll .benefits{ width:100%; }
+
     .title{ font-size:clamp(1.8rem, 8.2vw, 2.4rem); }
     .subtitle{ font-size:clamp(1rem, 3.8vw, 1.25rem); }
     .lead{ font-size:clamp(.95rem, 3.2vw, 1.08rem); }
@@ -386,12 +348,73 @@
     .map-wrap{ width:min(92vw,360px); }
 
     .flickity-button,
-    .flickity-page-dots{
-      display:none !important;
+    .flickity-page-dots{ display:none !important; }
+
+    /* slide-specific tweaks */
+    .hero.is-mobile-scroll .slide-home .slide-inner{
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      gap:clamp(14px,4vw,24px);
+      padding:calc(var(--headerTop) + var(--headerH) + 20px) clamp(16px,6vw,28px) calc(var(--footerH) + 20px);
+    }
+    .hero.is-mobile-scroll .slide-home .scale-up{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:clamp(12px,3.5vw,20px);
+    }
+    .hero.is-mobile-scroll .slide-home .subtitle,
+    .hero.is-mobile-scroll .slide-home .lead{
+      margin-left:auto;
+      margin-right:auto;
+      max-width:26ch;
+    }
+
+    .hero.is-mobile-scroll .slide-method .slide-inner{
+      align-items:flex-start;
+      justify-content:flex-start;
+      overflow-y:auto;
+      padding-bottom:calc(var(--footerH) + 36px);
+      max-height:calc(100svh - var(--headerTop) - var(--headerH) - 24px);
+    }
+    .hero.is-mobile-scroll .slide-method .slide-inner::-webkit-scrollbar{ display:none; }
+    .hero.is-mobile-scroll .slide-method .benefits{ gap:clamp(12px,4vw,18px); }
+
+    .hero.is-mobile-scroll .slide-prices .slide-inner{
+      align-items:center;
+      text-align:center;
+      gap:clamp(18px,4vw,26px);
+    }
+    .hero.is-mobile-scroll .slide-prices .grid{
+      width:100%;
+      gap:clamp(12px,4vw,18px);
+    }
+    .hero.is-mobile-scroll .slide-prices .card{
+      text-align:center;
+      padding:18px 16px;
+    }
+
+    .hero.is-mobile-scroll .slide-about .slide-inner{
+      align-items:flex-start;
+      padding-bottom:calc(var(--footerH) + 40px);
+      gap:clamp(18px,4vw,26px);
+    }
+    .hero.is-mobile-scroll .slide-about .about-wrap{
+      width:100%;
+      padding:0;
+    }
+    .hero.is-mobile-scroll .slide-about .map-wrap{
+      width:100%;
+      max-width:420px;
+      margin:1.2rem 0 0;
+    }
+    .hero.is-mobile-scroll .slide-about .map-embed{
+      width:100%;
+      height:min(320px,50vh);
     }
   }
 
-  /* тесные экраны телефонов */
   @media (max-width:520px){
     :root{ --headerTop:10px; --headerH:60px; --btnH:36px; --footerH:112px; }
     body{ font-size:135%; }
@@ -430,11 +453,10 @@
 <!-- Хедер -->
 <header class="header" role="navigation" aria-label="Основная навигация">
   <div class="header-inner" id="navBar">
-    <button class="nav-btn is-active" data-goto="0">Главная</button>
-    <button class="nav-btn" data-goto="1">Методика</button>
-    <button class="nav-btn" data-goto="2">Цены</button>
-    <button class="nav-btn" data-goto="3">О нас</button>
-    <button class="nav-btn" data-goto="4">Противопоказания</button>
+    <button type="button" class="nav-btn is-active" data-goto="0">Главная</button>
+    <button type="button" class="nav-btn" data-goto="1">Методика</button>
+    <button type="button" class="nav-btn" data-goto="2">Цены</button>
+    <button type="button" class="nav-btn" data-goto="3">О нас</button>
   </div>
 </header>
 
@@ -442,7 +464,7 @@
 <div class="hero" data-carousel>
 
   <!-- 1 — Главная -->
-  <div class="carousel-cell">
+  <div class="carousel-cell slide-home">
     <div class="bg-abs"><img src="1.jpg" alt="" loading="eager"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
@@ -455,7 +477,7 @@
   </div>
 
   <!-- 2 — Методика (мобильный вертикальный скролл) -->
-  <div class="carousel-cell">
+  <div class="carousel-cell slide-method">
     <div class="bg-abs"><img src="2.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
@@ -479,7 +501,7 @@
   </div>
 
   <!-- 3 — Цены -->
-  <div class="carousel-cell">
+  <div class="carousel-cell slide-prices">
     <div class="bg-abs"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner">
@@ -496,7 +518,7 @@
   </div>
 
   <!-- 4 — О нас (мобильный вертикальный скролл) -->
-  <div class="carousel-cell">
+  <div class="carousel-cell slide-about">
     <div class="bg-abs"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
     <div class="slide-inner about-layout">
@@ -517,37 +539,11 @@
     </div>
   </div>
 
-  <!-- 5 — Противопоказания -->
-  <div class="carousel-cell">
-    <div class="bg-abs"><img src="2.png" alt="" loading="lazy" decoding="async"></div>
-    <div class="overlay"></div>
-    <div class="slide-inner top-aligned">
-      <div class="scale-up">
-        <h2 class="title">Противопоказания</h2>
-        <ul class="contra-list">
-          <li>Гипертермия</li>
-          <li>Кровотечения</li>
-          <li>Болезни крови</li>
-          <li>Заболевания кожи</li>
-          <li>Значительный варикоз</li>
-          <li>Тромбоз</li>
-          <li>Туберкулёз</li>
-          <li>Беременность</li>
-          <li>Заболевания лимф. сосудов и узлов</li>
-          <li>Острая ишемия миокарда</li>
-          <li>Доброкачественные и злокачественные опухоли до хирургического лечения</li>
-          <li>Диабет</li>
-          <li>Алкогольное и наркотическое опьянение и т.д.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <footer>
   <span>Адрес: ул. Примерная, 12 · Минск</span>
-  <span class="sep">•</span>
+  <span class="sep">&bull;</span>
   <span>Создано студией <strong>Mortred forge</strong></span>
 </footer>
 <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
@@ -558,8 +554,8 @@
     const mobileMQ = window.matchMedia('(max-width:768px)');
     let flkty = null;
     let wheelHandlerBound = false;
-    let scrollListenerAttached = false;
     let lastWheel = 0;
+    let scrollListenerAttached = false;
     let ticking = false;
 
     const getCells = () => Array.from(carouselEl.querySelectorAll('.carousel-cell')).filter(cell => !cell.classList.contains('is-cloned'));
@@ -574,9 +570,9 @@
 
     const scrollToCell = (index) => {
       const cells = getCells();
-      const cell = cells[index];
-      if (!cell) return;
-      cell.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+      const target = cells[index];
+      if (!target) return;
+      target.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
     };
 
     const updateActiveByScroll = () => {
@@ -605,6 +601,19 @@
       });
     };
 
+    const attachMobileScroll = () => {
+      if (scrollListenerAttached) return;
+      carouselEl.addEventListener('scroll', onScroll, { passive:true });
+      scrollListenerAttached = true;
+    };
+
+    const detachMobileScroll = () => {
+      if (!scrollListenerAttached) return;
+      carouselEl.removeEventListener('scroll', onScroll);
+      scrollListenerAttached = false;
+      ticking = false;
+    };
+
     const wheelHandler = (event) => {
       if (!flkty) return;
       if (mobileMQ.matches) return;
@@ -628,19 +637,6 @@
       if (!wheelHandlerBound) return;
       window.removeEventListener('wheel', wheelHandler, { passive:false });
       wheelHandlerBound = false;
-    };
-
-    const attachMobileScroll = () => {
-      if (scrollListenerAttached) return;
-      carouselEl.addEventListener('scroll', onScroll, { passive:true });
-      scrollListenerAttached = true;
-    };
-
-    const detachMobileScroll = () => {
-      if (!scrollListenerAttached) return;
-      carouselEl.removeEventListener('scroll', onScroll);
-      scrollListenerAttached = false;
-      ticking = false;
     };
 
     const enterMobileMode = () => {
@@ -672,9 +668,11 @@
         selectedAttraction:0.02,
         friction:0.35
       });
+
       const applyActive = () => setActive(flkty.selectedIndex);
       flkty.on('select', applyActive);
       applyActive();
+
       navButtons.forEach((btn, idx) => {
         btn.onclick = () => flkty.select(idx);
       });
