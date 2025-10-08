@@ -79,7 +79,7 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
   }
 
-  /* Контакты справа */
+  /* Контакты (по умолчанию справа сверху на десктопе) */
   .contact{
     position:fixed; top:var(--headerTop); right:16px; z-index:1100;
     height:var(--headerH); display:flex; align-items:center; gap:10px;
@@ -286,35 +286,68 @@
     body{ font-size:160%; }
     .contact a{ font-size:.56em; }
   }
+
   /* телефоны */
   @media (max-width:768px){
-    :root{ --headerTop:12px; --headerH:70px; --btnH:40px; --footerH:98px; }
+    :root{ --headerTop:12px; --headerH:64px; --btnH:38px; --footerH:104px; }
     body{ font-size:145%; overflow:auto; } /* даём странице дышать на мобилках */
+
+    /* 1) Кнопки телефона/ТГ ПЕРЕЕЗЖАЮТ НАД ФУТЕРОМ */
+    .contact{ 
+      left:0; right:0; top:auto; bottom:calc(var(--footerH) + 10px);
+      height:auto; justify-content:center; gap:12px; pointer-events:none;
+    }
+    .contact a{ 
+      pointer-events:auto; height:44px; padding:0 14px; border-radius:14px; font-size:.72em;
+      background:linear-gradient(180deg, rgba(202,161,116,.18), rgba(202,161,116,.04));
+    }
+    .iconbtn{ width:44px; }
+    /* скрываем текст у телефона на самых узких */
+    @media (max-width:520px){
+      .contact a:first-child svg + span{ display:none; }
+      .contact a{ padding:0 10px; }
+    }
+
+    /* Хедер на мобильных тише и левее */
     .header{ justify-content:flex-start; padding:0 12px; }
     .header-inner{ max-width:100%; }
-    .contact{ right:10px; gap:8px; }
-    .contact a{ padding:0 12px; height:calc(var(--headerH) - 14px); }
-    .subtitle{ font-size:clamp(1rem,3.8vw,1.25rem); }
-    .lead{ font-size:clamp(.95rem,3.2vw,1.08rem); }
+
+    /* 2) Вертикальный скролл на 2 и 4 слайдах */
+    .carousel-cell:nth-child(2),
+    .carousel-cell:nth-child(4){
+      height:auto; min-height:100svh; /* рост по контенту */
+    }
+    .carousel-cell:nth-child(2) .slide-inner,
+    .carousel-cell:nth-child(4) .slide-inner{
+      display:block; text-align:left; padding:calc(var(--headerTop) + var(--headerH) + 10px) 6vw calc(var(--footerH) + 120px);
+    }
+
+    /* Разрешаем вертикальный скролл именно внутри этих слайдов */
+    .flickity-viewport{ height:auto !important; }
+    .carousel-cell{ height:100svh; }
+
+    /* 3) Масштаб текста на остальных слайдах под экран */
+    .title{ font-size:clamp(1.8rem, 8.2vw, 2.4rem); }
+    .subtitle{ font-size:clamp(1rem, 3.8vw, 1.25rem); }
+    .lead{ font-size:clamp(.95rem, 3.2vw, 1.08rem); }
+
+    /* сетки в один столбец */
     .benefits{ grid-template-columns:1fr; }
     .grid{ grid-template-columns:1fr; }
     .map-wrap{ width:min(92vw,360px); }
   }
+
   /* очень узкие телефоны */
   @media (max-width:520px){
-    :root{ --headerTop:10px; --headerH:64px; --btnH:38px; --footerH:104px; }
+    :root{ --headerTop:10px; --headerH:60px; --btnH:36px; --footerH:112px; }
     body{ font-size:135%; }
-    .contact a:not(.iconbtn){ padding:0 10px; }
-    /* скрываем текст у телефона, оставляем иконку, чтобы не налезало */
-    .contact a:first-child{ padding:0 10px; }
-    .contact a:first-child svg + span{ display:none; }
-    .title{ font-size:clamp(1.6rem,8vw,2.4rem); }
+    .title{ font-size:clamp(1.6rem,9vw,2.2rem); }
   }
 </style>
 </head>
 <body>
 
-<!-- Контакты -->
+<!-- Контакты (теперь будут переезжать на мобильных над футером) -->
 <div class="contact" aria-label="Позвонить">
   <a href="tel:+375000000000" title="Позвонить">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -354,7 +387,7 @@
     </div>
   </div>
 
-  <!-- 2 — Методика -->
+  <!-- 2 — Методика (мобильный вертикальный скролл) -->
   <div class="carousel-cell">
     <div class="bg-abs"><img src="2.jpg" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
@@ -395,7 +428,7 @@
     </div>
   </div>
 
-  <!-- 4 — О нас -->
+  <!-- 4 — О нас (мобильный вертикальный скролл) -->
   <div class="carousel-cell">
     <div class="bg-abs"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1920&q=80" alt="" loading="lazy" decoding="async"></div>
     <div class="overlay"></div>
@@ -464,7 +497,7 @@
   flkty.on('select', ()=> setActive(flkty.selectedIndex));
   setActive(0);
 
-  // РќР°РІРёРіР°С†РёСЏ РєРѕР»РµСЃРѕРј (desktop)
+  // Навигация колесом (desktop)
   (function(){
     if (window.matchMedia('(max-width:520px)').matches) return;
     let last=0, cooldown=650;
@@ -474,18 +507,18 @@
       e.preventDefault(); d>0?flkty.next():flkty.previous(); last=now;
     },{passive:false});
   })();
+
+  // Блокировка горизонтального свайпа, когда в 2 и 4 слайдах юзер скроллит вниз
+  flkty.on('dragStart', ()=>{
+    const i = flkty.selectedIndex;
+    const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
+    if (isScrollable) flkty.options.draggable = false;
+  });
+  flkty.on('settle', ()=>{
+    const i = flkty.selectedIndex;
+    const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
+    flkty.options.draggable = !isScrollable; // включаем свайп только на не-скролльных слайдах
+  });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
