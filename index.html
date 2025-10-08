@@ -290,9 +290,30 @@
   /* телефоны */
   @media (max-width:768px){
     :root{ --headerTop:12px; --headerH:64px; --btnH:38px; --footerH:104px; }
-    body{ font-size:145%; overflow:auto; } /* даём странице дышать на мобилках */
+    body{
+      font-size:145%;
+      overflow-y:auto;
+      overflow-x:hidden;
+    } /* даём странице дышать на мобилках */
 
-    /* 1) Кнопки телефона/ТГ ПЕРЕЕЗЖАЮТ НАД ФУТЕРОМ */
+    /* Отключаем reveal-анимации на мобилках, чтобы текст сразу отображался */
+    .nav-btn,
+    .contact a,
+    .slide-inner .title,
+    .slide-inner .subtitle,
+    .slide-inner .lead,
+    .grid .card,
+    .benefit,
+    .about-wrap > *,
+    .contra-list li,
+    footer span,
+    footer strong{
+      animation:none !important;
+      opacity:1 !important;
+      transform:none !important;
+    }
+
+    /* 1) Кнопки телефона/ТГ переезжают над футером */
     .contact{ 
       left:0; right:0; top:auto; bottom:calc(var(--footerH) + 10px);
       height:auto; justify-content:center; gap:12px; pointer-events:none;
@@ -302,11 +323,6 @@
       background:linear-gradient(180deg, rgba(202,161,116,.18), rgba(202,161,116,.04));
     }
     .iconbtn{ width:44px; }
-    /* скрываем текст у телефона на самых узких */
-    @media (max-width:520px){
-      .contact a:first-child svg + span{ display:none; }
-      .contact a{ padding:0 10px; }
-    }
 
     /* Хедер на мобильных тише и левее */
     .header{ justify-content:flex-start; padding:0 12px; }
@@ -324,24 +340,27 @@
 
     /* Разрешаем вертикальный скролл именно внутри этих слайдов */
     .flickity-viewport{ height:auto !important; }
-    .carousel-cell{ height:100svh; }
+    .carousel-cell{ min-height:100svh; height:auto; }
 
     /* 3) Масштаб текста на остальных слайдах под экран */
     .title{ font-size:clamp(1.8rem, 8.2vw, 2.4rem); }
     .subtitle{ font-size:clamp(1rem, 3.8vw, 1.25rem); }
     .lead{ font-size:clamp(.95rem, 3.2vw, 1.08rem); }
 
-    /* сетки в один столбец */
+    /* Сетки в один столбец */
     .benefits{ grid-template-columns:1fr; }
     .grid{ grid-template-columns:1fr; }
     .map-wrap{ width:min(92vw,360px); }
   }
 
-  /* очень узкие телефоны */
+  /* Тесные экраны телефонов */
   @media (max-width:520px){
     :root{ --headerTop:10px; --headerH:60px; --btnH:36px; --footerH:112px; }
     body{ font-size:135%; }
     .title{ font-size:clamp(1.6rem,9vw,2.2rem); }
+    .contact a:first-child svg + span{ display:none; }
+    .contact a{ padding:0 10px; }
+    .slide-inner .lead{ margin-left:0; margin-right:0; }
   }
 </style>
 </head>
@@ -497,6 +516,12 @@
   flkty.on('select', ()=> setActive(flkty.selectedIndex));
   setActive(0);
 
+  const setDraggable = (shouldDrag)=>{
+    if (flkty.options.draggable === shouldDrag) return;
+    flkty.options.draggable = shouldDrag;
+    flkty.updateDraggable();
+  };
+
   // Навигация колесом (desktop)
   (function(){
     if (window.matchMedia('(max-width:520px)').matches) return;
@@ -512,12 +537,12 @@
   flkty.on('dragStart', ()=>{
     const i = flkty.selectedIndex;
     const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
-    if (isScrollable) flkty.options.draggable = false;
+    setDraggable(!isScrollable);
   });
   flkty.on('settle', ()=>{
     const i = flkty.selectedIndex;
     const isScrollable = (i===1 || i===3) && window.matchMedia('(max-width:768px)').matches;
-    flkty.options.draggable = !isScrollable; // включаем свайп только на не-скролльных слайдах
+    setDraggable(!isScrollable); // включаем свайп только на не-скролльных слайдах
   });
 </script>
 </body>
